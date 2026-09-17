@@ -1,0 +1,12 @@
+tensorflow>=2.10
+numpy>=1.21
+pandas>=1.3
+scikit-learn>=1.0
+opencv-python>=4.5
+matplotlib>=3.5
+seaborn>=0.12
+pillow>=8.3
+jupyter>=1.0
+ipython>=7.0
+tensorflow-hub>=0.12  # For additional model architectures (optional)
+tf-slim>=1.1.0        # For model utilities (optional)
