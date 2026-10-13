@@ -32,9 +32,9 @@ The common held-out test set contains **860 images and 40 classes**. Aggregate m
 | Model / artifact | Accuracy | Precision | Recall | F1-score | Evidence status |
 | --- | ---: | ---: | ---: | ---: | --- |
 | Custom CNN baseline report | 96.40% | 96.67% | 96.40% | 96.46% | Complete aggregate report |
-| MobileNetV2 detailed evaluation | 90.12% | 90.72% | 90.12% | 89.91% | Complete aggregate and per-class report |
-| EfficientNetB0 metadata checkpoint | 96.98% | Not reported | Not reported | Not reported | Accuracy only; regenerate full evaluation before publication |
-| ResNet50 prediction evaluation | 96.74% | Not reported | Not reported | Not reported | Accuracy and prediction analysis; regenerate full classification report before publication |
+| MobileNetV2 detailed evaluation | 90.12% | 90.72% | 90.12% | 89.91% | Complete weighted aggregate and per-class report |
+| EfficientNetB0 final checkpoint | 96.86% | 97.10% | 96.86% | 96.86% | Complete weighted aggregate and per-class report |
+| ResNet50 phase-2 training evaluation | 96.74% | 96.62% | 96.65% | 96.49% | Complete macro aggregate; weighted F1 96.78% |
 
 The older `results/reports/model_comparison.csv` contains different final-artifact values (MobileNetV2 80.12% and EfficientNetB0 81.28%). These must not be merged with the detailed evaluations: they appear to come from different checkpoints or preprocessing conditions. Resolve this discrepancy by rerunning the same evaluator on each final checkpoint before making a definitive paper table.
 
@@ -43,7 +43,7 @@ The older `results/reports/model_comparison.csv` contains different final-artifa
 #### Custom CNN baseline
 
 - **Purpose:** non-pretrained baseline for measuring the benefit of transfer learning.
-- **Reported test metrics:** accuracy 0.963953, macro precision 0.966697, macro recall 0.963953, macro F1 0.964581.
+- **Reported test metrics:** accuracy 0.963953, weighted precision 0.966697, weighted recall 0.963953, weighted F1 0.964581.
 - **Training evidence:** `results/reports/cnn_baseline_history.json`, `custom_cnn_part1_history.json`, and `custom_cnn_part2_history.json`.
 - **Confusion matrices:** `results/plots/cnn_confusion_matrix.png` and `cnn_confusion_matrix_normalized.png`.
 - **Metric source:** `results/reports/cnn_baseline_metrics.json`.
@@ -52,34 +52,64 @@ The older `results/reports/model_comparison.csv` contains different final-artifa
 #### MobileNetV2
 
 - **Purpose:** lightweight model for mobile and edge inference.
-- **Reported test metrics:** accuracy 0.901163, macro precision 0.907166, macro recall 0.901163, macro F1 0.899090.
+- **Reported test metrics:** accuracy 0.901163, weighted precision 0.907166, weighted recall 0.901163, weighted F1 0.899090.
 - **Per-class evidence:** the detailed classification report contains precision, recall, F1-score, and support for all 40 classes.
 - **Confusion matrices:** `results/plots/mobilenet_confusion_matrix.png`, `mobilenet_confusion_matrix_normalized.png`, and `mobilenet_v2_confusion_matrix_full.png`.
 - **Metric source:** `results/reports/mobilenet_metrics.json` and the MobileNet section of `comprehensive_evaluation_report.json`.
 - **Training evidence:** `results/reports/mobilenet_history.json`.
+- **Aggregation method:** the notebook calculates all four aggregate metrics with `average='weighted'`; these are not macro averages.
+- **Stale-artifact warning:** the current `results/reports/mobilenet_metrics.json` contains a separate failed run at approximately 2.33% accuracy. Use the 90.12% result from the MobileNet evaluation notebook and `comprehensive_evaluation_report.json` only after confirming the checkpoint and test split.
 - **Caution:** `models/mobilenetv2/` is empty; the available MobileNetV2 files are under `models/mobilenet/`. Preserve the exact checkpoint path in any paper or release package.
 
 #### EfficientNetB0
 
 - **Purpose:** accuracy-efficiency trade-off for production deployment.
-- **Available result:** metadata reports final accuracy 0.969767 (96.98%), with 4,420,683 total parameters and input size 256x256x3.
+- **Verified final-checkpoint metrics:** accuracy 0.968605 (96.86%), weighted precision 0.970987 (97.10%), weighted recall 0.968605 (96.86%), and weighted F1 0.968578 (96.86%). Macro precision is 0.969413 (96.94%), macro recall is 0.968915 (96.89%), and macro F1 is 0.967927 (96.79%).
+- **Model details:** 4,420,683 total parameters, input size 256x256x3, and 860 test samples.
 - **Training configuration in metadata:** 25 frozen-base epochs, 20 fine-tuning epochs, batch size 8.
-- **Evidence:** `models/efficientnetb0/efficientnetb0_metadata.json`, phase history plots, and `results/confusion_matrix/efficientnetb0_phase1_cm.npy`.
-- **Missing for a complete paper table:** precision, recall, F1-score, a phase-2 confusion matrix, and a per-class classification report. Do not infer these from accuracy.
+- **Evidence:** `models/efficientnetb0/efficientnetb0_metadata.json`, `results/reports/efficientnetb0_metrics_complete.json`, phase history plots, and `results/confusion_matrix/efficientnetb0_phase2_cm.npy`.
+- **Complete evaluation output:** `results/reports/efficientnetb0_metrics_complete.json` records accuracy, weighted and macro precision/recall/F1, the per-class classification report, and the raw confusion matrix for `models/efficientnetb0/efficientnetb0_final.h5`.
 - **Deployment evidence:** `results/reports/tflite_conversion_report.json` reports a 35.70 MB original model, 16.71 MB float TFLite model, and 4.71 MB quantized TFLite model. The reported TFLite accuracy values are a separate conversion evaluation and must be labelled as such.
+
+### Mobile and Edge Deployment Models
+
+The project includes TensorFlow Lite exports for running inference on Android, embedded Linux, Raspberry Pi, and other resource-constrained devices. These are deployment conversions, not new independently trained architectures.
+
+| Mobile artifact | Format | Size | Reported accuracy | Size reduction | Recommended use |
+| --- | --- | ---: | ---: | ---: | --- |
+| `models/tflite/model_float.tflite` | Float32 TFLite | 16.71 MB | 88% | 53.20% vs original | Devices where accuracy is prioritized and storage is available |
+| `models/tflite/model_quantized.tflite` | Quantized TFLite | 4.71 MB | 90% | 86.81% vs original | Default mobile and edge deployment candidate |
+
+- **Source model:** EfficientNetB0 at `models/efficientnetb0/efficientnetb0_final.h5`.
+- **Conversion report:** `results/reports/tflite_conversion_report.json`.
+- **Metadata:** `models/tflite/metadata.json`, when included with the exported model package.
+- **Deployment recommendation:** use `model_quantized.tflite` for the smallest footprint; validate latency and accuracy on the target device before release.
+- **Important evaluation note:** the 88% and 90% values come from the TFLite conversion evaluation. They must not be compared directly with the 96.98% EfficientNetB0 training/checkpoint metadata value unless the same test images, preprocessing, labels, and evaluation code are used.
+- **Runtime requirement:** the mobile application must use the same input resolution, channel order, scaling, class-index mapping, and output label list used during training. A wrong preprocessing range can make a strong model appear close to random performance.
+
+Example Android/Python deployment flow:
+
+1. Load the `.tflite` file with TensorFlow Lite or the platform TFLite runtime.
+2. Resize each image to the model input shape and apply the recorded preprocessing.
+3. Run inference and map the output index to the saved 40-class label list.
+4. Display the predicted class and confidence, while applying a confidence threshold for an `uncertain` result.
+5. Measure cold-start time, average inference latency, peak memory, battery impact, and accuracy on the target hardware.
 
 #### ResNet50
 
 - **Purpose:** high-capacity accuracy reference and explainability model.
-- **Reported prediction evaluation:** accuracy 0.967442, 832 correct predictions, 28 incorrect predictions, mean confidence 0.982082, and 22 predictions below 0.70 confidence.
-- **Confusion matrices:** `results/confusion_matrix/resnet50_phase1_cm.npy`, `resnet50_phase1_cm.png`, and `resnet50_phase2_cm.npy`.
+- **Verified phase-2 training metrics:** accuracy 0.9674 (96.74%), macro precision 0.9662 (96.62%), macro recall 0.9665 (96.65%), macro F1 0.9649 (96.49%), and weighted F1 0.9678 (96.78%).
+- **Phase-2 comparison:** phase 1 accuracy was 0.8605, while phase 2 improved by 0.1070 (+12.4%). Macro precision improved from 0.8782 to 0.9662, macro recall from 0.8676 to 0.9665, macro F1 from 0.8649 to 0.9649, and weighted F1 from 0.8598 to 0.9678.
+- **Primary metric source:** the phase-2 output in `09_resnet50_transfer_learning.ipynb`, generated by `evaluate_and_report_metrics` on the phase-2 model and the 860-image test split.
+- **Phase-2 evidence:** `results/logs/resnet50_phase2_class_metrics.json` and `results/confusion_matrix/resnet50_phase2_cm.npy`.
+- **Saved-checkpoint evidence:** `results/reports/resnet50_metrics_complete.json` contains a separate evaluation of the current `resnet50_final.h5` artifact.
+- **Historical artifacts:** `results/confusion_matrix/resnet50_phase1_cm.npy`, `resnet50_phase1_cm.png`, and `resnet50_phase2_cm.npy` belong to earlier runs.
 - **Explainability evidence:** Grad-CAM uses `conv5_block3_3_conv`; see `results/reports/explainability_report.json` and `results/plots/gradcam_*.png`.
-- **Metric source:** `results/reports/prediction_report.json` and `explainability_report.json`.
-- **Conflict requiring rerun:** `models/resnet50/resnet50_metadata.json` records a separate 2.44% evaluation. Because this contradicts the 96.74% prediction report, the checkpoint, preprocessing, label order, and split must be verified before publication.
+- **Artifact warning:** the current saved `resnet50_final.h5` evaluation reports 2.44%, while the phase-2 in-memory training evaluation reports 96.74%. Use the phase-2 values for the training-results table, but regenerate and verify the saved checkpoint before claiming deployment or release reproducibility.
 
 ### Required paper reporting checklist
 
-For every final model, rerun one identical evaluator and archive: accuracy, macro and weighted precision/recall/F1, per-class precision/recall/F1/support, the raw 40x40 confusion matrix, normalized confusion matrix, test loss, parameter count, model size, inference time, random seed, preprocessing, checkpoint hash, and the exact test split. Report confidence intervals or repeated-seed variance where possible. The existing notebooks generate much of this material, especially `notebooks/08_model_evaluation.ipynb`, `11_prediction_testing.ipynb`, and `13_gradcam_explainability.ipynb`.
+For every final model, rerun one identical evaluator and archive: accuracy, macro and weighted precision/recall/F1, per-class precision/recall/F1/support, the raw 40x40 confusion matrix, normalized confusion matrix, test loss, parameter count, model size, inference time, random seed, preprocessing, checkpoint hash, and the exact test split. Always label whether reported aggregate values are macro or weighted averages. Report confidence intervals or repeated-seed variance where possible. The existing notebooks generate much of this material, especially `notebooks/08_model_evaluation.ipynb`, `11_prediction_testing.ipynb`, and `13_gradcam_explainability.ipynb`.
 
 ---
 
@@ -171,6 +201,8 @@ python train_resnet50.py
 - Visualization plots in `results/plots/`
 - TFLite models in `models/tflite/`
 - Grad-CAM explainability outputs in notebooks and reports
+
+Mobile deployment artifacts include the Float32 and quantized TensorFlow Lite models, their conversion report, and model metadata. Keep these files together when packaging the mobile application.
 
 ---
 
