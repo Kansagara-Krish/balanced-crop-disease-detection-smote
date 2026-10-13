@@ -1,638 +1,231 @@
-# Crop Leaf Disease Classification using TensorFlow/Keras
+# Crop Leaf Disease Classification using TensorFlow / Keras
 
-A professional deep learning project for multi-crop disease classification using Convolutional Neural Networks (CNNs) and transfer learning with multiple pretrained architectures.
+A reproducible research project for 40-class crop-leaf disease classification using a custom CNN and ImageNet transfer-learning models. This README records the currently available evidence for each model so that results can be reused in a PhD paper without mixing metrics from different runs.
 
-## 📋 Project Overview
+---
 
-This project implements an end-to-end deep learning pipeline for classifying crop leaf diseases across multiple crop types:
-- **Crops**: Papaya, Guava, Brinjal, Castor, Cumin
-- **Classification**: Healthy vs Unhealthy (specific diseases)
-- **Approaches**: 
-  - Custom CNN baseline
-  - Transfer Learning Models: MobileNetV2, EfficientNetB0, ResNet50
-- **Output**: Trained models, TensorFlow Lite export, Grad-CAM visualizations
+## 📌 Project Overview
 
-## ✨ Version 2.0 Update - Transfer Learning Suite
+This repository implements a complete workflow for crop leaf disease detection across multiple crop types.
 
-**NEW:** Support for three modern transfer learning architectures:
+- **Crops:** Papaya, Guava, Brinjal, Castor, Cumin
+- **Task:** Healthy vs Unhealthy leaf disease classification
+- **Approaches:** Custom CNN baseline, MobileNetV2, EfficientNetB0, ResNet50
+- **Deliverables:** Trained models, evaluation reports, TFLite exports, Grad-CAM visualizations
 
-| Model | Size | Speed | Test Accuracy | F1-Score | Use Case |
-|-------|------|-------|---------------|----------|----------|
-| **Custom CNN** | checkpoint-dependent | Moderate | 96.40% | 96.46% | Baseline reference |
-| **MobileNetV2** | 14 MB | ⚡ Fast | 90.12% | 89.91% | Mobile/Edge devices |
-| **EfficientNetB0** | 35.70 MB | 🚀 Medium | 96.98%* | Not reported | Production systems |
-| **ResNet50** | checkpoint-dependent | 🔥 Balanced | 96.74%* | Not reported | High accuracy required |
+---
 
-`*` Accuracy is available from a checkpoint metadata or prediction report, but the matching precision, recall, F1-score, and complete per-class report are not currently archived for that exact artifact. Do not treat these values as a complete paper comparison until the same evaluator has been rerun on every final checkpoint.
+## 🌟 Highlights
 
-### Paper-ready metric sources
+- Modern transfer learning with MobileNetV2, EfficientNetB0, and ResNet50
+- Full notebook pipeline for dataset validation, model training, evaluation, and deployment
+- Mobile-ready model export using TensorFlow Lite
+- Interpretability via Grad-CAM explainability
+- Professional documentation for stakeholder review
 
-| Model | Accuracy | Precision | Recall | F1-score | Confusion matrix / detailed evidence |
+---
+
+## 📈 Verified Results and Evidence
+
+The common held-out test set contains **860 images and 40 classes**. Aggregate metrics below are percentages. The metric source is shown explicitly because the repository contains several checkpoints and historical experiments.
+
+| Model / artifact | Accuracy | Precision | Recall | F1-score | Evidence status |
 | --- | ---: | ---: | ---: | ---: | --- |
-| Custom CNN | 96.40% | 96.67% | 96.40% | 96.46% | `results/plots/cnn_confusion_matrix.png`, `cnn_confusion_matrix_normalized.png` |
-| MobileNetV2 | 90.12% | 90.72% | 90.12% | 89.91% | `results/plots/mobilenet_v2_confusion_matrix_full.png`; 40-class report in `results/reports/comprehensive_evaluation_report.json` |
-| EfficientNetB0 | 96.98% | Pending | Pending | Pending | Phase-1 matrix only; regenerate phase-2 matrix and classification report |
-| ResNet50 | 96.74% | Pending | Pending | Pending | `results/confusion_matrix/resnet50_phase1_cm.npy`, `resnet50_phase2_cm.npy`; prediction and Grad-CAM reports available |
+| Custom CNN baseline report | 96.40% | 96.67% | 96.40% | 96.46% | Complete aggregate report |
+| MobileNetV2 detailed evaluation | 90.12% | 90.72% | 90.12% | 89.91% | Complete weighted aggregate and per-class report |
+| EfficientNetB0 final checkpoint | 96.86% | 97.10% | 96.86% | 96.86% | Complete weighted aggregate and per-class report |
+| ResNet50 phase-2 training evaluation | 96.74% | 96.62% | 96.65% | 96.49% | Complete macro aggregate; weighted F1 96.78% |
 
-The repository also contains conflicting final-artifact values in `results/reports/model_comparison.csv` (MobileNetV2 80.12%, EfficientNetB0 81.28%). These likely represent different checkpoints or preprocessing conditions. Use one fixed test split, preprocessing pipeline, label order, and evaluator for the definitive publication table. See the detailed evidence and checklist in `notebooks_only_repo/README.md`.
+The older `results/reports/model_comparison.csv` contains different final-artifact values (MobileNetV2 80.12% and EfficientNetB0 81.28%). These must not be merged with the detailed evaluations: they appear to come from different checkpoints or preprocessing conditions. Resolve this discrepancy by rerunning the same evaluator on each final checkpoint before making a definitive paper table.
 
-For detailed transfer learning documentation, see [TRANSFER_LEARNING_GUIDE.md](TRANSFER_LEARNING_GUIDE.md)
+### Model-by-model evidence
 
-## 📁 Project Structure
+#### Custom CNN baseline
 
-```
+- **Purpose:** non-pretrained baseline for measuring the benefit of transfer learning.
+- **Reported test metrics:** accuracy 0.963953, weighted precision 0.966697, weighted recall 0.963953, weighted F1 0.964581.
+- **Training evidence:** `results/reports/cnn_baseline_history.json`, `custom_cnn_part1_history.json`, and `custom_cnn_part2_history.json`.
+- **Confusion matrices:** `results/plots/cnn_confusion_matrix.png` and `cnn_confusion_matrix_normalized.png`.
+- **Metric source:** `results/reports/cnn_baseline_metrics.json`.
+- **Available checkpoints:** `models/cnn/cnn_baseline.h5`, `best_model.h5`, `best_model.keras`, and `custom_cnn_final_valacc_0.9744.h5`.
+
+#### MobileNetV2
+
+- **Purpose:** lightweight model for mobile and edge inference.
+- **Reported test metrics:** accuracy 0.901163, weighted precision 0.907166, weighted recall 0.901163, weighted F1 0.899090.
+- **Per-class evidence:** the detailed classification report contains precision, recall, F1-score, and support for all 40 classes.
+- **Confusion matrices:** `results/plots/mobilenet_confusion_matrix.png`, `mobilenet_confusion_matrix_normalized.png`, and `mobilenet_v2_confusion_matrix_full.png`.
+- **Metric source:** `results/reports/mobilenet_metrics.json` and the MobileNet section of `comprehensive_evaluation_report.json`.
+- **Training evidence:** `results/reports/mobilenet_history.json`.
+- **Aggregation method:** the notebook calculates all four aggregate metrics with `average='weighted'`; these are not macro averages.
+- **Stale-artifact warning:** the current `results/reports/mobilenet_metrics.json` contains a separate failed run at approximately 2.33% accuracy. Use the 90.12% result from the MobileNet evaluation notebook and `comprehensive_evaluation_report.json` only after confirming the checkpoint and test split.
+- **Caution:** `models/mobilenetv2/` is empty; the available MobileNetV2 files are under `models/mobilenet/`. Preserve the exact checkpoint path in any paper or release package.
+
+#### EfficientNetB0
+
+- **Purpose:** accuracy-efficiency trade-off for production deployment.
+- **Verified final-checkpoint metrics:** accuracy 0.968605 (96.86%), weighted precision 0.970987 (97.10%), weighted recall 0.968605 (96.86%), and weighted F1 0.968578 (96.86%). Macro precision is 0.969413 (96.94%), macro recall is 0.968915 (96.89%), and macro F1 is 0.967927 (96.79%).
+- **Model details:** 4,420,683 total parameters, input size 256x256x3, and 860 test samples.
+- **Training configuration in metadata:** 25 frozen-base epochs, 20 fine-tuning epochs, batch size 8.
+- **Evidence:** `models/efficientnetb0/efficientnetb0_metadata.json`, `results/reports/efficientnetb0_metrics_complete.json`, phase history plots, and `results/confusion_matrix/efficientnetb0_phase2_cm.npy`.
+- **Complete evaluation output:** `results/reports/efficientnetb0_metrics_complete.json` records accuracy, weighted and macro precision/recall/F1, the per-class classification report, and the raw confusion matrix for `models/efficientnetb0/efficientnetb0_final.h5`.
+- **Deployment evidence:** `results/reports/tflite_conversion_report.json` reports a 35.70 MB original model, 16.71 MB float TFLite model, and 4.71 MB quantized TFLite model. The reported TFLite accuracy values are a separate conversion evaluation and must be labelled as such.
+
+### Mobile and Edge Deployment Models
+
+The project includes TensorFlow Lite exports for running inference on Android, embedded Linux, Raspberry Pi, and other resource-constrained devices. These are deployment conversions, not new independently trained architectures.
+
+| Mobile artifact | Format | Size | Reported accuracy | Size reduction | Recommended use |
+| --- | --- | ---: | ---: | ---: | --- |
+| `models/tflite/model_float.tflite` | Float32 TFLite | 16.71 MB | 88% | 53.20% vs original | Devices where accuracy is prioritized and storage is available |
+| `models/tflite/model_quantized.tflite` | Quantized TFLite | 4.71 MB | 90% | 86.81% vs original | Default mobile and edge deployment candidate |
+
+- **Source model:** EfficientNetB0 at `models/efficientnetb0/efficientnetb0_final.h5`.
+- **Conversion report:** `results/reports/tflite_conversion_report.json`.
+- **Metadata:** `models/tflite/metadata.json`, when included with the exported model package.
+- **Deployment recommendation:** use `model_quantized.tflite` for the smallest footprint; validate latency and accuracy on the target device before release.
+- **Important evaluation note:** the 88% and 90% values come from the TFLite conversion evaluation. They must not be compared directly with the 96.98% EfficientNetB0 training/checkpoint metadata value unless the same test images, preprocessing, labels, and evaluation code are used.
+- **Runtime requirement:** the mobile application must use the same input resolution, channel order, scaling, class-index mapping, and output label list used during training. A wrong preprocessing range can make a strong model appear close to random performance.
+
+Example Android/Python deployment flow:
+
+1. Load the `.tflite` file with TensorFlow Lite or the platform TFLite runtime.
+2. Resize each image to the model input shape and apply the recorded preprocessing.
+3. Run inference and map the output index to the saved 40-class label list.
+4. Display the predicted class and confidence, while applying a confidence threshold for an `uncertain` result.
+5. Measure cold-start time, average inference latency, peak memory, battery impact, and accuracy on the target hardware.
+
+#### ResNet50
+
+- **Purpose:** high-capacity accuracy reference and explainability model.
+- **Verified phase-2 training metrics:** accuracy 0.9674 (96.74%), macro precision 0.9662 (96.62%), macro recall 0.9665 (96.65%), macro F1 0.9649 (96.49%), and weighted F1 0.9678 (96.78%).
+- **Phase-2 comparison:** phase 1 accuracy was 0.8605, while phase 2 improved by 0.1070 (+12.4%). Macro precision improved from 0.8782 to 0.9662, macro recall from 0.8676 to 0.9665, macro F1 from 0.8649 to 0.9649, and weighted F1 from 0.8598 to 0.9678.
+- **Primary metric source:** the phase-2 output in `09_resnet50_transfer_learning.ipynb`, generated by `evaluate_and_report_metrics` on the phase-2 model and the 860-image test split.
+- **Phase-2 evidence:** `results/logs/resnet50_phase2_class_metrics.json` and `results/confusion_matrix/resnet50_phase2_cm.npy`.
+- **Saved-checkpoint evidence:** `results/reports/resnet50_metrics_complete.json` contains a separate evaluation of the current `resnet50_final.h5` artifact.
+- **Historical artifacts:** `results/confusion_matrix/resnet50_phase1_cm.npy`, `resnet50_phase1_cm.png`, and `resnet50_phase2_cm.npy` belong to earlier runs.
+- **Explainability evidence:** Grad-CAM uses `conv5_block3_3_conv`; see `results/reports/explainability_report.json` and `results/plots/gradcam_*.png`.
+- **Artifact warning:** the current saved `resnet50_final.h5` evaluation reports 2.44%, while the phase-2 in-memory training evaluation reports 96.74%. Use the phase-2 values for the training-results table, but regenerate and verify the saved checkpoint before claiming deployment or release reproducibility.
+
+### Required paper reporting checklist
+
+For every final model, rerun one identical evaluator and archive: accuracy, macro and weighted precision/recall/F1, per-class precision/recall/F1/support, the raw 40x40 confusion matrix, normalized confusion matrix, test loss, parameter count, model size, inference time, random seed, preprocessing, checkpoint hash, and the exact test split. Always label whether reported aggregate values are macro or weighted averages. Report confidence intervals or repeated-seed variance where possible. The existing notebooks generate much of this material, especially `notebooks/08_model_evaluation.ipynb`, `11_prediction_testing.ipynb`, and `13_gradcam_explainability.ipynb`.
+
+---
+
+## 📁 Repository Structure
+
+```text
 cnn_model/
-│
-├── notebooks/                          # Jupyter notebooks (ordered pipeline)
-│   ├── 01_data_check.ipynb            # Dataset validation
-│   ├── 02_dataset_visualization.ipynb  # EDA & visualization
-│   ├── 03_targeted_augmentation.ipynb  # Target-class data augmentation
-│   ├── 04_data_preprocessing.ipynb     # Preprocessing & memory-efficient dataset preparation
-│   ├── 05_cnn_baseline.ipynb           # Custom CNN training
-│   ├── 06_mobilenet_training.ipynb     # Transfer learning (MobileNetV2)
-│   ├── 07_offline_augmentation.ipynb   # Offline dataset augmentations
-│   ├── 08_model_evaluation.ipynb       # Model comparison, metrics & confusion matrices
-│   ├── 09_resnet50_transfer_learning.ipynb # Transfer learning (ResNet50)
-│   ├── 10_efficientnetb0_training.ipynb  # Transfer learning (EfficientNetB0)
-│   ├── 11_prediction_testing.ipynb     # Inference & error analysis on test set
-│   ├── 12_tflite_conversion.ipynb      # Convert models to TensorFlow Lite format
-│   └── 13_gradcam_explainability.ipynb  # Interpretability & explainable AI (Grad-CAM)
-│
-├── models/                             # Trained models & training scripts
-│   ├── train_mobilenetv2.py            # MobileNetV2 training script
-│   ├── train_efficientnetb0.py         # EfficientNetB0 training script
-│   ├── train_resnet50.py               # ResNet50 training script
-│   ├── cnn/                            # Custom CNN models (empty)
-│   ├── mobilenet/                      # MobileNetV2 model weights
-│   │   ├── mobilenet_v2_final.h5       # Final saved MobileNetV2 model
-│   │   └── best_model.h5               # Best saved MobileNetV2 model
-│   ├── efficientnetb0/                 # EfficientNetB0 model weights & checkpoints
-│   │   ├── efficientnetb0_final.h5     # Final saved EfficientNetB0 model
-│   │   └── best_efficientnetb0_phase*_stage*.h5 # Checkpoints
-│   ├── resnet50/                       # ResNet50 model weights & checkpoints
-│   │   ├── resnet50_final.h5           # Final saved ResNet50 model
-│   │   └── resnet50_phase*_best.h5     # Checkpoints
-│   └── tflite/                         # Mobile-ready models
-│       ├── model_float.tflite          # Floating point TFLite model
-│       ├── model_quantized.tflite      # Quantized TFLite model
-│       └── metadata.json               # Model metadata
-│
-├── utils/                              # Utility modules
-│   ├── transfer_learning_utils.py      # Transfer learning functions
-│   ├── efficient_data_loader.py        # Memory-efficient data loaders (batch loading on-demand)
-│   ├── npz_consolidator.py            # NPZ array loading consolidator
-│   ├── data_utils.py                   # Data loading & validation
-│   ├── model_utils.py                  # Custom CNN & model utilities
-│   └── visualization_utils.py          # Plotting & visualization
-│
-├── results/                            # Results & outputs
-│   ├── confusion_matrix/               # Confusion matrix arrays & plots
-│   ├── logs/                           # TensorBoard and training logs
-│   ├── plots/                          # Generated visualizations and Grad-CAM outputs
-│   ├── reports/                        # Evaluation reports, metrics and guides
-│   │   ├── mobilenet_history.json      # MobileNetV2 training history
-│   │   ├── mobilenet_metrics.json      # MobileNetV2 performance metrics
-│   │   ├── model_comparison.csv        # Summary model metrics
-│   │   ├── prediction_report.json      # Test predictions summary
-│   │   └── explainability_report.json  # Grad-CAM validation report
-│   └── preprocessed_data_efficient/    # Processed datasets (memory-efficient NPZ files & split metadata)
-│
-├── Final_images_phd/                   # Dataset (symlink or actual data)
-│   ├── Brinjal/
-│   ├── Castor/
-│   ├── Cumin/
-│   ├── Guava/
-│   └── Papaya/
-│
-├── TRANSFER_LEARNING_GUIDE.md          # ✨ Comprehensive transfer learning guide
-├── README.md                           # This file
-└── requirements.txt                    # Python dependencies
-```
-
-## 🎯 Notebook Execution Order
-
-### Phase 1: Dataset, Visualization, and Preprocessing ⚙️
-```
-01_data_check.ipynb              # Verify dataset structure and integrity
-    ↓
-02_dataset_visualization.ipynb    # EDA & visualize sample images
-    ↓
-03_targeted_augmentation.ipynb   # Target-class augmentations
-    ↓
-04_data_preprocessing.ipynb      # Create train/val/test splits & save NPZ files
-```
-
-**Tasks:**
-- Verify dataset structure, sizes, and integrity.
-- Perform exploratory data analysis and visualize class distributions.
-- Implement target-class augmentations to balance underrepresented categories.
-- Resize images to 224×224, normalize, and divide into train/val/test splits (70/15/15) stored memory-efficiently as individual `.npz` files.
-
----
-
-### Phase 2: Model Training 🤖
-```
-05_cnn_baseline.ipynb            # Custom CNN baseline training
-    ↓
-06_mobilenet_training.ipynb      # MobileNetV2 transfer learning
-    ↓
-07_offline_augmentation.ipynb    # Offline dataset augmentations
-    ↓
-09_resnet50_transfer_learning.ipynb # ResNet50 transfer learning
-    ↓
-10_efficientnetb0_training.ipynb  # EfficientNetB0 transfer learning
-```
-
-**Tasks:**
-- Train custom CNN baseline model.
-- Train transfer learning models (MobileNetV2, ResNet50, EfficientNetB0) using a 2-phase approach (frozen base + fine-tuning).
-- Use callback routines for early stopping, learning rate schedules, and logging.
-- Train with memory-efficient generator-based datasets.
-
----
-
-### Phase 3: Evaluation, Prediction, and Deployment 📊
-```
-08_model_evaluation.ipynb        # Compare models and plot metrics
-    ↓
-11_prediction_testing.ipynb      # Detailed test set predictions & confidence
-    ↓
-12_tflite_conversion.ipynb       # Convert models to TensorFlow Lite formats
-    ↓
-13_gradcam_explainability.ipynb  # Interpretability & explainable AI (Grad-CAM)
-```
-
-**Tasks:**
-- Evaluate test set performance and compile detailed comparison metrics.
-- Plot confusion matrices, training histories, and precision/recall stats.
-- Run inference tests to evaluate confidence scores and analyze misclassifications.
-- Export trained models to floating point and integer-quantized TFLite formats for mobile deployment.
-- Generate explainability maps (Grad-CAM) to visualize focus regions.
-
----
-
-## 🚀 Quick Start - Transfer Learning
-
-### Train Individual Models
-
-After completing Phase 1 (preprocessing), run individual transfer learning models:
-
-**MobileNetV2** (Lightweight, fastest)
-```bash
-cd models
-python train_mobilenetv2.py
-```
-
-**EfficientNetB0** (Balanced performance)
-```bash
-cd models
-python train_efficientnetb0.py
-```
-
-**ResNet50** (High accuracy)
-```bash
-cd models
-python train_resnet50.py
-```
-
-Each script:
-1. Loads preprocessed data from `results/preprocessed_data/`
-2. Applies model-specific preprocessing
-3. Builds and trains the model (2-phase approach)
-4. Evaluates on test set
-5. Saves model to `models/<model_name>/`
-6. Saves metrics to `results/reports/`
-
-### Expected Output
-
-```
-======================================================================
-MobileNetV2 Transfer Learning Training
-======================================================================
-
-Configuration:
-  Model: MobileNetV2
-  ...
-
-PHASE 1: Training with Frozen Base Layers
-✓ Phase 1 completed!
-
-PHASE 2: Fine-tuning with Unfrozen Layers
-✓ Phase 2 completed!
-
-Evaluating on test set...
-✓ Evaluation completed!
-  Accuracy:  0.9234
-  Precision: 0.9187
-  Recall:    0.9234
-  F1-Score:  0.9210
-
-Saving model and metrics...
-✓ Model saved to: models/mobilenetv2/mobilenetv2_model.h5
-✓ Metrics saved to: results/reports/mobilenetv2_metrics.json
-
-======================================================================
+├── notebooks/                        # Ordered Jupyter notebooks
+│   ├── 01_data_check.ipynb
+│   ├── 02_dataset_visualization.ipynb
+│   ├── 03_targeted_augmentation.ipynb
+│   ├── 04_data_preprocessing.ipynb
+│   ├── 05_cnn_baseline.ipynb
+│   ├── 06_mobilenet_training.ipynb
+│   ├── 07_offline_augmentation.ipynb
+│   ├── 08_model_evaluation.ipynb
+│   ├── 09_resnet50_transfer_learning.ipynb
+│   ├── 10_efficientnetb0_training.ipynb
+│   ├── 11_prediction_testing.ipynb
+│   ├── 12_tflite_conversion.ipynb
+│   └── 13_gradcam_explainability.ipynb
+├── models/                           # Training scripts and saved model weights
+├── utils/                            # Reusable utilities
+├── results/                          # Outputs, plots, and reports
+├── TRANSFER_LEARNING_GUIDE.md        # Transfer learning documentation
+├── README.md                         # Project overview and instructions
+└── requirements.txt                  # Python dependencies
 ```
 
 ---
 
-### Using Transfer Learning in Jupyter Notebooks
+## 🧠 Workflow Overview
 
-```python
-import sys
-sys.path.insert(0, '../utils')
+### Phase 1: Data Preparation
 
-from transfer_learning_utils import (
-    build_mobilenetv2_model,
-    preprocess_images,
-    train_two_phase_transfer_learning,
-    evaluate_transfer_learning_model,
-    save_transfer_learning_model
-)
+1. `01_data_check.ipynb` — Dataset validation and integrity checks
+2. `02_dataset_visualization.ipynb` — Exploratory data analysis and visualization
+3. `03_targeted_augmentation.ipynb` — Targeted augmentation for class balance
+4. `04_data_preprocessing.ipynb` — Preprocessing, resizing, normalization, and split creation
 
-# Load data
-X_train = np.load('../results/preprocessed_data/X_train.npy')
-# ... load other data ...
+### Phase 2: Model Training
 
-# Preprocess for MobileNetV2
-X_train_proc = preprocess_images(X_train, model_type='mobilenetv2')
+1. `05_cnn_baseline.ipynb` — Custom CNN baseline training
+2. `06_mobilenet_training.ipynb` — MobileNetV2 transfer learning
+3. `07_offline_augmentation.ipynb` — Offline augmentation experiments
+4. `09_resnet50_transfer_learning.ipynb` — ResNet50 transfer learning
+5. `10_efficientnetb0_training.ipynb` — EfficientNetB0 transfer learning
 
-# Build model
-model = build_mobilenetv2_model(num_classes=num_classes)
+### Phase 3: Evaluation and Deployment
 
-# Train with two-phase approach
-history = train_two_phase_transfer_learning(
-    model=model,
-    X_train=X_train_proc,
-    y_train=y_train,
-    X_val=X_val_proc,
-    y_val=y_val,
-    epochs_phase1=20,
-    epochs_phase2=15
-)
-
-# Evaluate
-metrics = evaluate_transfer_learning_model(
-    model=model,
-    X_test=X_test_proc,
-    y_test=y_test,
-    class_names=class_names
-)
-
-print(f"Test Accuracy: {metrics['accuracy']:.4f}")
-```
-
-For advanced usage and detailed documentation, see [TRANSFER_LEARNING_GUIDE.md](TRANSFER_LEARNING_GUIDE.md)
-    ↓
-08_tflite_conversion.ipynb
-    ↓
-09_gradcam_explainability.ipynb
-```
-
-**Tasks:**
-- Compare CNN vs MobileNet performance
-- Evaluate on test set with detailed metrics
-- Generate confusion matrices and classification reports
-- Test predictions with confidence analysis
-- Convert to TensorFlow Lite for mobile
-- Generate Grad-CAM visualizations for interpretability
+1. `08_model_evaluation.ipynb` — Model comparison and metrics
+2. `11_prediction_testing.ipynb` — Inference and confidence analysis
+3. `12_tflite_conversion.ipynb` — TensorFlow Lite export
+4. `13_gradcam_explainability.ipynb` — Grad-CAM interpretability
 
 ---
 
 ## 🚀 Quick Start
 
-### Prerequisites
+### Install dependencies
+
 ```bash
-pip install tensorflow tensorflow-lite
-pip install numpy pandas scikit-learn matplotlib seaborn
-pip install opencv-python pillow
-pip install jupyter ipython
+pip install -r requirements.txt
 ```
 
-### Running the Project
+### Run the notebook pipeline
 
-1. **Start Jupyter Notebook:**
-   ```bash
-   jupyter notebook
-   ```
-
-2. **Execute notebooks in order:**
-   - Start with `01_data_check.ipynb` to verify dataset
-   - Progress through phases as outlined above
-
-3. **Key Outputs:**
-   - Trained models in `models/` directory
-   - Visualizations in `results/plots/`
-   - Metrics & reports in `results/reports/`
-
----
-
-## 📊 Model Architectures
-
-### CNN Baseline
-```
-Input (224, 224, 3)
-    ↓
-Conv2D (32) → BatchNorm → Conv2D (32) → BatchNorm → MaxPool → Dropout
-    ↓
-Conv2D (64) → BatchNorm → Conv2D (64) → BatchNorm → MaxPool → Dropout
-    ↓
-Conv2D (128) → BatchNorm → Conv2D (128) → BatchNorm → MaxPool → Dropout
-    ↓
-Conv2D (256) → BatchNorm → Conv2D (256) → BatchNorm → MaxPool → Dropout
-    ↓
-Flatten → Dense(512) → BatchNorm → Dropout(0.5)
-    ↓
-Dense(256) → BatchNorm → Dropout(0.5)
-    ↓
-Output (num_classes, softmax)
+```bash
+jupyter notebook
 ```
 
-### Transfer Learning Models (MobileNetV2, EfficientNetB0, ResNet50) ✨
+Execute notebooks in the order listed above.
 
-All transfer learning models use the same architecture pattern:
+### Train models directly
 
-```
-Input (224, 224, 3)
-    ↓
-Pretrained Base Model (ImageNet weights)
-    ├─ Phase 1: Base FROZEN
-    └─ Phase 2: Last 50 layers UNFROZEN for fine-tuning
-    ↓
-GlobalAveragePooling2D()
-    ↓
-Dense(128, activation='relu')
-    ↓
-Dropout(0.3)
-    ↓
-Output (num_classes, softmax)
-
-Training Strategy:
-├─ Phase 1: Train custom head only (20 epochs)
-│  └─ Base model frozen, learns task-specific features from pretrained weights
-│
-└─ Phase 2: Fine-tune last 50 layers (15 epochs)
-   └─ Reduce learning rate to 0.0001 to preserve learned features
-```
-
-**Key Hyperparameters:**
-- Input Shape: 224×224×3
-- Optimizer: Adam (LR=0.0001 in Phase 2)
-- Loss: Categorical Crossentropy
-- Callbacks: EarlyStopping, ReduceLROnPlateau, ModelCheckpoint
-
----
-
-## 🎓 Key Features
-
-### Data Preprocessing
-- ✅ Image resizing to 224×224
-- ✅ Normalization to [0, 1]
-- ✅ Data augmentation (rotation, shifts, zoom, flips)
-- ✅ Stratified train/val/test splits
-- ✅ Corruption detection & handling
-
-### Model Training
-- ✅ Custom CNN with batch normalization
-- ✅ MobileNetV2 transfer learning
-- ✅ Early stopping & learning rate reduction
-- ✅ Model checkpointing (save best models)
-- ✅ Training history tracking
-
-### Evaluation
-- ✅ Confusion matrices
-- ✅ Classification reports (precision, recall, F1)
-- ✅ Per-class performance analysis
-- ✅ ROC curves (per-class)
-- ✅ Misclassification analysis
-
-### Deployment
-- ✅ TensorFlow Lite export (float & quantized)
-- ✅ Model quantization for mobile efficiency
-- ✅ Size reduction analysis
-- ✅ Accuracy preservation validation
-
-### Explainability
-- ✅ Grad-CAM visualizations
-- ✅ Attention map generation
-- ✅ Per-class heatmaps
-- ✅ Misclassification interpretation
-
----
-
-## 📈 Expected Performance
-
-### Model Comparison
-
-| Model | Model Size | Inference Time | Test Accuracy | Training Time | GPU Memory |
-|-------|-----------|-----------------|-------|-------|---------|
-| Custom CNN | ~150 MB | Slow | 75-85% | 40-50 min | High |
-| MobileNetV2 | 14 MB | ⚡ Fast | 90-92% | 15-20 min | Low |
-| **EfficientNetB0** | **29 MB** | **Medium** | **92-94%** | **20-25 min** | **Medium** |
-| ResNet50 | 98 MB | Medium | 93-95% | 25-30 min | High |
-
-*Times and accuracies are approximate and depend on dataset size, hardware, and hyperparameters.*
-
-### Performance Benefits
-
-✅ **Transfer Learning Advantages:**
-- Faster convergence (15-25 min vs 40-50 min)
-- Better accuracy (90%+ vs 75-85%)
-- Smaller model size (14-98 MB vs 150 MB)
-- Better generalization
-- Lower computational requirements
-
-### TensorFlow Lite Conversion
-
-- **Float Model:** ~14-98 MB (99%+ accuracy preserved)
-- **Quantized Model:** ~3-25 MB (95%+ accuracy preserved)
-- **Inference Time:** 50-150 ms per image (mobile device)
-
----
-
-## 📝 Generated Reports
-
-### Data Validation
-- `data_check_report.json` - Dataset integrity check
-- `label_encoding.json` - Class label mapping
-
-### Model Performance
-- `model_comparison.csv` - CNN vs MobileNet metrics
-- `comprehensive_evaluation_report.json` - Detailed metrics
-- `best_model.json` - Best model information
-
-### Predictions
-- `prediction_report.json` - Test set prediction statistics
-- `per_class_prediction_stats.csv` - Per-class accuracy
-
-### Deployment
-- `tflite_conversion_report.json` - TFLite conversion details
-- `explainability_report.json` - Grad-CAM analysis
-
----
-
-## 🎯 Use Cases
-
-### 1. Research & Development
-- Establish baseline models for crop disease classification
-- Compare CNN vs transfer learning approaches
-- Analyze model attention patterns
-
-### 2. Mobile Deployment
-- Deploy TFLite quantized model to Android/iOS
-- Real-time crop health monitoring in fields
-- Lightweight inference on edge devices
-
-### 3. Explainability & Trust
-- Generate Grad-CAM heatmaps for interpretability
-- Validate model decisions for agricultural experts
-- Identify if model focuses on disease symptoms
-
-### 4. Dataset Creation
-- Use trained models as weak labels for new data
-- Identify difficult examples for annotation
-- Bootstrap larger labeled datasets
-
----
-
-## 🔧 Customization
-
-### Modify Parameters
-Edit the configuration sections in each notebook:
-
-```python
-# Image preprocessing
-IMAGE_SIZE = (224, 224)  # Change input size
-BATCH_SIZE = 32          # Adjust batch size
-
-# Training
-EPOCHS = 50              # Number of epochs
-LEARNING_RATE = 0.001    # Learning rate
-TRAINABLE_LAYERS = 50    # Layers to fine-tune
-
-# Data split
-TRAIN_SPLIT = 0.7
-VAL_SPLIT = 0.15
-TEST_SPLIT = 0.15
-```
-
-### Add New Crops
-1. Add crop folder to `Final_images_phd/`
-2. Organize as: `Crop_name/Healthy_crop_name/` and `Crop_name/Unhealthy_crop_name/Disease_1/`, etc.
-3. Re-run notebooks from `01_data_check.ipynb`
-
-### Use Different Models
-Replace in `model_utils.py`:
-```python
-# Alternative: ResNet50, EfficientNet, etc.
-base_model = keras.applications.ResNet50(weights='imagenet')
-# or
-base_model = keras.applications.EfficientNetB0(weights='imagenet')
+```bash
+cd models
+python train_mobilenetv2.py
+python train_efficientnetb0.py
+python train_resnet50.py
 ```
 
 ---
 
-## 📚 Dependencies
+## 🧪 Expected Outputs
 
-```
-tensorflow >= 2.10
-numpy >= 1.21
-pandas >= 1.3
-scikit-learn >= 1.0
-opencv-python >= 4.5
-matplotlib >= 3.5
-seaborn >= 0.12
-pillow >= 8.3
-jupyter >= 1.0
-```
+- Trained model artifacts in `models/`
+- Evaluation metrics in `results/reports/`
+- Visualization plots in `results/plots/`
+- TFLite models in `models/tflite/`
+- Grad-CAM explainability outputs in notebooks and reports
+
+Mobile deployment artifacts include the Float32 and quantized TensorFlow Lite models, their conversion report, and model metadata. Keep these files together when packaging the mobile application.
 
 ---
 
-## 🐛 Troubleshooting
+## ✅ Why this project is professional
 
-### Out of Memory (OOM)
-- Reduce `BATCH_SIZE` from 32 to 16 or 8
-- Reduce image size (e.g., 224 → 160)
-- Use only phase 1 training (without fine-tuning)
-
-### Slow Training
-- Reduce number of `EPOCHS`
-- Use early stopping with lower `patience`
-- Enable GPU: `tf.config.list_physical_devices('GPU')`
-
-### Poor Model Performance
-- Increase augmentation intensity
-- Use class weights if dataset is imbalanced
-- Collect more training data
-- Increase model capacity (more layers/filters)
-
-### TFLite Quantization Loss
-- Use float model instead of quantized
-- Reduce quantization intensity
-- Fine-tune with quantization-aware training
+- Structured notebook workflow for reproducible research
+- Clear reporting and evaluation metrics
+- Transfer learning with production-ready architectures
+- Mobile deployment via TensorFlow Lite
+- Explainable AI using Grad-CAM
 
 ---
 
-## 📖 References
+## 🔍 Files to review first
 
-- [TensorFlow Documentation](https://www.tensorflow.org/)
-- [MobileNetV2 Paper](https://arxiv.org/abs/1801.04381)
-- [Grad-CAM Paper](https://arxiv.org/abs/1610.02055)
-- [Keras API Guide](https://keras.io/)
-
----
-
-## 👥 Contributing
-
-Contributions are welcome! Please:
-1. Create a feature branch
-2. Add tests for new functionality
-3. Submit a pull request with description
+- `README.md` — Project summary and usage
+- `TRANSFER_LEARNING_GUIDE.md` — Detailed architecture and training guidance
+- `notebooks/` — Full development and experimentation pipeline
+- `models/` — Saved model weights and training scripts
+- `results/` — Analysis outputs and reports
 
 ---
 
-## 📄 License
+## 📌 Notes
 
-This project is provided for educational and research purposes.
-
----
-
-## 📞 Support
-
-For issues or questions:
-1. Check the troubleshooting section
-2. Review notebook comments and docstrings
-3. Consult generated reports in `results/reports/`
-
----
-
-## ✅ Project Status
-
-✅ **Complete**: All 9 notebooks implemented
-✅ **Tested**: Utility functions validated
-✅ **Documented**: Comprehensive docstrings
-✅ **Production-Ready**: TFLite models exported
-
-**Last Updated:** May 9, 2026
-**Version:** 1.0
-
----
-
-## 🎓 Learning Outcomes
-
-After completing this project, you will understand:
-- ✅ Complete ML pipeline from data to deployment
-- ✅ Custom CNN architecture design
-- ✅ Transfer learning with MobileNetV2
-- ✅ Data preprocessing and augmentation
-- ✅ Model evaluation and comparison
-- ✅ TensorFlow Lite conversion for mobile
-- ✅ Model interpretability with Grad-CAM
-- ✅ Professional code organization
-
----
-
-**Happy Learning! 🚀**
-#   c n n _ m o d e l _ l e a f _ c l a s s i f i c a t i o n - 
- 
- 
+This repository is designed for stakeholder review, academic presentation, and deployment-ready demonstration for multi-crop leaf disease classification.
