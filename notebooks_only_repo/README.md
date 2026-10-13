@@ -1,6 +1,6 @@
 ﻿# Crop Leaf Disease Classification using TensorFlow / Keras
 
-A professional deep learning project for multi-crop leaf disease classification using CNNs and transfer learning.
+A reproducible research project for 40-class crop-leaf disease classification using a custom CNN and ImageNet transfer-learning models. This README records the currently available evidence for each model so that results can be reused in a PhD paper without mixing metrics from different runs.
 
 ---
 
@@ -25,16 +25,61 @@ This repository implements a complete workflow for crop leaf disease detection a
 
 ---
 
-## 📈 Model Summary
+## 📈 Verified Results and Evidence
 
-| Model | Approx. Size | Speed | Test Accuracy | Use Case |
-| --- | --- | --- | --- | --- |
-| Custom CNN | Baseline | Moderate | ~12.3% | Baseline reference |
-| MobileNetV2 | 14 MB | Fast | 90.12% | Mobile / edge deployment |
-| EfficientNetB0 | 29 MB | Balanced | 96.98% | Production-ready |
-| ResNet50 | 98 MB | High accuracy | 96.74% | Accuracy-critical applications |
+The common held-out test set contains **860 images and 40 classes**. Aggregate metrics below are percentages. The metric source is shown explicitly because the repository contains several checkpoints and historical experiments.
 
-For more details, see [TRANSFER_LEARNING_GUIDE.md](TRANSFER_LEARNING_GUIDE.md).
+| Model / artifact | Accuracy | Precision | Recall | F1-score | Evidence status |
+| --- | ---: | ---: | ---: | ---: | --- |
+| Custom CNN baseline report | 96.40% | 96.67% | 96.40% | 96.46% | Complete aggregate report |
+| MobileNetV2 detailed evaluation | 90.12% | 90.72% | 90.12% | 89.91% | Complete aggregate and per-class report |
+| EfficientNetB0 metadata checkpoint | 96.98% | Not reported | Not reported | Not reported | Accuracy only; regenerate full evaluation before publication |
+| ResNet50 prediction evaluation | 96.74% | Not reported | Not reported | Not reported | Accuracy and prediction analysis; regenerate full classification report before publication |
+
+The older `results/reports/model_comparison.csv` contains different final-artifact values (MobileNetV2 80.12% and EfficientNetB0 81.28%). These must not be merged with the detailed evaluations: they appear to come from different checkpoints or preprocessing conditions. Resolve this discrepancy by rerunning the same evaluator on each final checkpoint before making a definitive paper table.
+
+### Model-by-model evidence
+
+#### Custom CNN baseline
+
+- **Purpose:** non-pretrained baseline for measuring the benefit of transfer learning.
+- **Reported test metrics:** accuracy 0.963953, macro precision 0.966697, macro recall 0.963953, macro F1 0.964581.
+- **Training evidence:** `results/reports/cnn_baseline_history.json`, `custom_cnn_part1_history.json`, and `custom_cnn_part2_history.json`.
+- **Confusion matrices:** `results/plots/cnn_confusion_matrix.png` and `cnn_confusion_matrix_normalized.png`.
+- **Metric source:** `results/reports/cnn_baseline_metrics.json`.
+- **Available checkpoints:** `models/cnn/cnn_baseline.h5`, `best_model.h5`, `best_model.keras`, and `custom_cnn_final_valacc_0.9744.h5`.
+
+#### MobileNetV2
+
+- **Purpose:** lightweight model for mobile and edge inference.
+- **Reported test metrics:** accuracy 0.901163, macro precision 0.907166, macro recall 0.901163, macro F1 0.899090.
+- **Per-class evidence:** the detailed classification report contains precision, recall, F1-score, and support for all 40 classes.
+- **Confusion matrices:** `results/plots/mobilenet_confusion_matrix.png`, `mobilenet_confusion_matrix_normalized.png`, and `mobilenet_v2_confusion_matrix_full.png`.
+- **Metric source:** `results/reports/mobilenet_metrics.json` and the MobileNet section of `comprehensive_evaluation_report.json`.
+- **Training evidence:** `results/reports/mobilenet_history.json`.
+- **Caution:** `models/mobilenetv2/` is empty; the available MobileNetV2 files are under `models/mobilenet/`. Preserve the exact checkpoint path in any paper or release package.
+
+#### EfficientNetB0
+
+- **Purpose:** accuracy-efficiency trade-off for production deployment.
+- **Available result:** metadata reports final accuracy 0.969767 (96.98%), with 4,420,683 total parameters and input size 256x256x3.
+- **Training configuration in metadata:** 25 frozen-base epochs, 20 fine-tuning epochs, batch size 8.
+- **Evidence:** `models/efficientnetb0/efficientnetb0_metadata.json`, phase history plots, and `results/confusion_matrix/efficientnetb0_phase1_cm.npy`.
+- **Missing for a complete paper table:** precision, recall, F1-score, a phase-2 confusion matrix, and a per-class classification report. Do not infer these from accuracy.
+- **Deployment evidence:** `results/reports/tflite_conversion_report.json` reports a 35.70 MB original model, 16.71 MB float TFLite model, and 4.71 MB quantized TFLite model. The reported TFLite accuracy values are a separate conversion evaluation and must be labelled as such.
+
+#### ResNet50
+
+- **Purpose:** high-capacity accuracy reference and explainability model.
+- **Reported prediction evaluation:** accuracy 0.967442, 832 correct predictions, 28 incorrect predictions, mean confidence 0.982082, and 22 predictions below 0.70 confidence.
+- **Confusion matrices:** `results/confusion_matrix/resnet50_phase1_cm.npy`, `resnet50_phase1_cm.png`, and `resnet50_phase2_cm.npy`.
+- **Explainability evidence:** Grad-CAM uses `conv5_block3_3_conv`; see `results/reports/explainability_report.json` and `results/plots/gradcam_*.png`.
+- **Metric source:** `results/reports/prediction_report.json` and `explainability_report.json`.
+- **Conflict requiring rerun:** `models/resnet50/resnet50_metadata.json` records a separate 2.44% evaluation. Because this contradicts the 96.74% prediction report, the checkpoint, preprocessing, label order, and split must be verified before publication.
+
+### Required paper reporting checklist
+
+For every final model, rerun one identical evaluator and archive: accuracy, macro and weighted precision/recall/F1, per-class precision/recall/F1/support, the raw 40x40 confusion matrix, normalized confusion matrix, test loss, parameter count, model size, inference time, random seed, preprocessing, checkpoint hash, and the exact test split. Report confidence intervals or repeated-seed variance where possible. The existing notebooks generate much of this material, especially `notebooks/08_model_evaluation.ipynb`, `11_prediction_testing.ipynb`, and `13_gradcam_explainability.ipynb`.
 
 ---
 

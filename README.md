@@ -18,10 +18,23 @@ This project implements an end-to-end deep learning pipeline for classifying cro
 
 | Model | Size | Speed | Test Accuracy | F1-Score | Use Case |
 |-------|------|-------|---------------|----------|----------|
-| **Custom CNN** | - | - | ~12.28% | - | Baseline reference |
+| **Custom CNN** | checkpoint-dependent | Moderate | 96.40% | 96.46% | Baseline reference |
 | **MobileNetV2** | 14 MB | ⚡ Fast | 90.12% | 89.91% | Mobile/Edge devices |
-| **EfficientNetB0** | 29 MB | 🚀 Medium | 96.98% | 96.97% | Production systems |
-| **ResNet50** | 98 MB | 🔥 Balanced | 96.74% | ~96.7% | High accuracy required |
+| **EfficientNetB0** | 35.70 MB | 🚀 Medium | 96.98%* | Not reported | Production systems |
+| **ResNet50** | checkpoint-dependent | 🔥 Balanced | 96.74%* | Not reported | High accuracy required |
+
+`*` Accuracy is available from a checkpoint metadata or prediction report, but the matching precision, recall, F1-score, and complete per-class report are not currently archived for that exact artifact. Do not treat these values as a complete paper comparison until the same evaluator has been rerun on every final checkpoint.
+
+### Paper-ready metric sources
+
+| Model | Accuracy | Precision | Recall | F1-score | Confusion matrix / detailed evidence |
+| --- | ---: | ---: | ---: | ---: | --- |
+| Custom CNN | 96.40% | 96.67% | 96.40% | 96.46% | `results/plots/cnn_confusion_matrix.png`, `cnn_confusion_matrix_normalized.png` |
+| MobileNetV2 | 90.12% | 90.72% | 90.12% | 89.91% | `results/plots/mobilenet_v2_confusion_matrix_full.png`; 40-class report in `results/reports/comprehensive_evaluation_report.json` |
+| EfficientNetB0 | 96.98% | Pending | Pending | Pending | Phase-1 matrix only; regenerate phase-2 matrix and classification report |
+| ResNet50 | 96.74% | Pending | Pending | Pending | `results/confusion_matrix/resnet50_phase1_cm.npy`, `resnet50_phase2_cm.npy`; prediction and Grad-CAM reports available |
+
+The repository also contains conflicting final-artifact values in `results/reports/model_comparison.csv` (MobileNetV2 80.12%, EfficientNetB0 81.28%). These likely represent different checkpoints or preprocessing conditions. Use one fixed test split, preprocessing pipeline, label order, and evaluator for the definitive publication table. See the detailed evidence and checklist in `notebooks_only_repo/README.md`.
 
 For detailed transfer learning documentation, see [TRANSFER_LEARNING_GUIDE.md](TRANSFER_LEARNING_GUIDE.md)
 
