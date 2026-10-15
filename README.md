@@ -1,4 +1,4 @@
-# Crop Leaf Disease Classification using TensorFlow / Keras
+﻿# Crop Leaf Disease Classification using TensorFlow / Keras
 
 A reproducible research project for 40-class crop-leaf disease classification using a custom CNN and ImageNet transfer-learning models. This README records the currently available evidence for each model so that results can be reused in a PhD paper without mixing metrics from different runs.
 
@@ -12,6 +12,47 @@ This repository implements a complete workflow for crop leaf disease detection a
 - **Task:** Healthy vs Unhealthy leaf disease classification
 - **Approaches:** Custom CNN baseline, MobileNetV2, EfficientNetB0, ResNet50
 - **Deliverables:** Trained models, evaluation reports, TFLite exports, Grad-CAM visualizations
+
+### Soil XGBoost Branch
+
+The soil-health classification branch is maintained in [`notebooks_only_repo/notebooks/XGBOOST_model_soil.ipynb`](notebooks_only_repo/notebooks/XGBOOST_model_soil.ipynb). The notebook retains the original training and tuning cells for reproducibility, but its final cell evaluates the existing saved model without retraining. The saved artifact is [`models/XG_boost_soil_data/soil_xgboost_final.joblib`](models/XG_boost_soil_data/soil_xgboost_final.joblib).
+
+The final evaluation cell:
+
+- loads the existing model when the in-memory model is unavailable;
+- uses the saved 63-feature schema and encoders;
+- evaluates the group-aware test split;
+- displays accuracy, ROC-AUC, macro and weighted F1, the classification report, confusion matrix, ROC curve, and top feature importances;
+- writes `final_test_metrics.csv`, `soil_predictions_for_fusion.csv`, `04_confusion_matrix.png`, `05_roc_curve.png`, and `03_xgboost_feature_importance.png` under `results/soil_xgboost/paper_figures/`.
+
+No model fitting or hyperparameter search is performed by the final evaluation cell.
+
+#### Verified Soil Model Results
+
+Metrics below were independently recomputed from [`soil_predictions_for_fusion.csv`](soil_predictions_for_fusion.csv), which contains the saved model's 368 prediction records.
+
+| Metric | Result | Interpretation |
+| --- | ---: | --- |
+| Test samples | 368 | Unique prediction records |
+| Accuracy | **96.47%** | 355 correct predictions |
+| ROC-AUC | **98.97%** | Excellent probability ranking |
+| Precision, macro | **90.20%** | Average precision across both classes |
+| Recall, macro | **86.76%** | Average recall across both classes |
+| F1-score, macro | **88.38%** | Balanced class-level F1 |
+| F1-score, weighted | **96.39%** | Support-weighted overall F1 |
+
+#### Evaluation Integrity
+
+| Check | Result |
+| --- | --- |
+| Confusion matrix | `[[24, 8], [5, 331]]` |
+| Actual class distribution | 32 class-0, 336 class-1 samples |
+| Duplicate sample IDs | **0** |
+| Probability range | 0.0260 to 0.9990 |
+| Label/probability consistency | All predictions agree with a 0.5 threshold |
+| Crop coverage | Corn 96, Soybean 105, Tomato 102, Wheat 65 |
+
+The test export is internally consistent and suitable for reporting these metrics. However, the CSV alone cannot prove that the samples were excluded from training; that requires the original dataset and split metadata.
 
 ---
 
