@@ -1,0 +1,157 @@
+{
+    "Chemical_Fungicide (Mancozeb/Copper)": {
+        "Representative_Chemicals": [
+            "Copper Oxychloride or Mancozeb or Azoxystrobin",
+            "Carbendazim or Trichoderma viride",
+            "Mancozeb,Neem oil 0.3% spray,Dithane-M-45",
+            "Copper oxychloride,Panchgavya 3% spray"
+        ],
+        "Typical_Dosages": [
+            "3 gm / Litre water or Azoxystrobin 0.5\u20130.7 ml/L",
+            "2 gm / Litre (Drenching)",
+            "2\u20132.5 g/L"
+        ],
+        "Primary_Advisories": [
+            "Prune infected branches and burn them; spray before monsoon.",
+            "Avoid water stagnation near roots; treat soil with lime before planting.",
+            "Spray  10\u201315 days during continuous humidity"
+        ]
+    },
+    "Micronutrient_Supplement (Zn/Fe/B/S/Mg)": {
+        "Representative_Chemicals": [
+            "Zinc Sulphate (ZnSO4) or \tPanchgavya 3% spray",
+            "Jeevamrut soil drenching or FYM / compost or Feras Salfar",
+            "Borax,Panchgavya 3% spray",
+            "Hexaconazole or Wettable Sulphur"
+        ],
+        "Typical_Dosages": [
+            "5 gm / Litre water",
+            "0.5% foliar spray== 5 g FeSO\u2084 + 2.5 g lime / litre",
+            "0.1% spray=0.1% sprayOnly once (toxic if excess!)"
+        ],
+        "Primary_Advisories": [
+            "Spray twice: once during new flush and again during fruit set.",
+            "Sparay it into tree or every year spray 10\u201315g per plant (Young) / 100g per plant (Adult) in soil",
+            "Apply boron carefully (VERY small dose)"
+        ]
+    },
+    "No_Chemical_Fertilizer (Toxicity/Flushing)": {
+        "Representative_Chemicals": [
+            "Gypsum"
+        ],
+        "Typical_Dosages": [
+            "200 g/m\u00b2"
+        ],
+        "Primary_Advisories": [
+            "Apply FeSO\u2084 spray,Stop Zn",
+            "Improve drainage,Avoid iron sprays,Avoid waterlogging",
+            "Stop urea / nitrogen fertilizers,Apply Potassium (MOP) 200\u2013250 g/tree,\nApply Phosphorus (SSP) 300\u2013500 g/tree,\nIncrease irrigation slightly to reduce N concentration"
+        ]
+    },
+    "Nitrogenous_Fertilizer (Urea)": {
+        "Representative_Chemicals": [
+            "Urea or  Ammonium Sulphate",
+            "Urea or Ammonium Sulphate",
+            "Urea / Ammonium Sulphate"
+        ],
+        "Typical_Dosages": [
+            "15-20 gm / Litre water",
+            "15\u201320 g / L water",
+            "15\u201320 g/L (foliar)"
+        ],
+        "Primary_Advisories": [
+            "Apply as a foliar spray to correct yellowing of older leaves.",
+            "Foliar spray to correct yellowing of older leaves",
+            "Spray to correct yellowing of older leaves; apply in evening"
+        ]
+    },
+    "Potassic_Fertilizer (MOP/SOP)": {
+        "Representative_Chemicals": [
+            "MOP or Wood ash",
+            "MOP / Wood ash",
+            "Sulphate of Potash (SOP)",
+            "MOP"
+        ],
+        "Typical_Dosages": [
+            "200\u2013250 g / tree / year or 1\u20131.5 kg/tree(wood ash)",
+            "100\u2013150 g/plant or 1 kg wood ash",
+            "100\u2013150 g/plant"
+        ],
+        "Primary_Advisories": [
+            "Improves fruit size, sweetness & firmness",
+            "Improves fruit size, firmness, and shelf life",
+            "Avoid MOP (KCl) fertilizer; use SOP instead to avoid adding more chloride."
+        ]
+    },
+    "Phosphatic_Fertilizer (SSP/DAP)": {
+        "Representative_Chemicals": [
+            "Single Super Phosphate (SSP) or Bone meal",
+            "Single Super Phosphate",
+            "DAP (Diammonium Phosphate)"
+        ],
+        "Typical_Dosages": [
+            "500 g / tree / year(SSP) or 250\u2013300 g/tree(Bone)",
+            "250\u2013300 g/plant (SSP)",
+            "50\u2013100 g/plant"
+        ],
+        "Primary_Advisories": [
+            "Enhances root growth & flowering",
+            "Improves root growth and flowering",
+            "Crucial for root establishment; apply only at sowing time."
+        ]
+    },
+    "Bio_Control_Organic_Care (Trichoderma/FYM)": {
+        "Representative_Chemicals": [
+            "FYM / compost",
+            "Trichoderma",
+            "Trichoderma viride",
+            "Organic Mulch"
+        ],
+        "Typical_Dosages": [
+            "Gypsum: 250\u2013500 kg/ha,Ammonium sulphate: 100\u2013150 g/tree,Elemental sulphur: 25 kg/ha",
+            "5 g/plant (soil)",
+            "Gypsum 250\u2013500 kg/ha, Ammonium sulphate 100 g/plant"
+        ],
+        "Primary_Advisories": [
+            "Apply Sulphur-containing fertilizers",
+            "Improve drainage",
+            "Apply sulphur-containing fertilizers"
+        ]
+    },
+    "Soil_Amendment (Gypsum/Lime)": {
+        "Representative_Chemicals": [
+            "Gypsum,Jeevamrut soil drenching",
+            "Gypsum, Jeevamrut soil drenching",
+            "Gypsum, Jeevamrut",
+            "Agricultural Lime"
+        ],
+        "Typical_Dosages": [
+            "250\u2013500 kg/ha",
+            "250 g/m\u00b2",
+            "500 g/m\u00b2"
+        ],
+        "Primary_Advisories": [
+            "Stop chemical fertilizers temporarily,Reduce salt concentration,Improve drainage,Apply organic manure",
+            "Stop chemical fertilizers, leaching irrigation, improve drainage",
+            "Reduce salinity, improve drainage, add organic manure"
+        ]
+    },
+    "Targeted_Insecticide (Pest/Vector)": {
+        "Representative_Chemicals": [
+            "Dimethoate or Imidacloprid",
+            "Thiamethoxam or Acetamiprid",
+            "Imidacloprid",
+            "Thiamethoxam"
+        ],
+        "Typical_Dosages": [
+            "0.3 ml/L (foliar spray)",
+            "0.5 ml / Litre water",
+            "0.3 ml/L"
+        ],
+        "Primary_Advisories": [
+            "Control aphids early; remove infected plants",
+            "Remove and destroy infected plants immediately; install yellow sticky traps.Soil application of Carbofuran (1 kg a.i./ha) at the time of sowing and 4-5 foliar\nsprays of Dimethoate (0.05%) or Metasystox (0.02%) or Nuvacron (0.05%) at an\ninterval of 10 days effectively controls the whitefly population.",
+            "No chemical cure for virus; control the aphid vectors to prevent spread."
+        ]
+    }
+}

@@ -15,7 +15,7 @@ This repository implements a complete workflow for crop leaf disease detection a
 
 ### Soil Health XGBoost & SHAP Explainability Model
 
-The primary soil-health classification and interpretability pipeline is implemented in [`notebooks/14_soil_xgboost_shap_analysis.ipynb`](notebooks/14_soil_xgboost_shap_analysis.ipynb) (and standalone script [`build_xgboost_shap_notebook.py`](build_xgboost_shap_notebook.py)).
+The primary soil-health classification and interpretability pipeline is implemented in [`notebooks/14_soil_xgboost_shap_analysis.ipynb`](notebooks/14_soil_xgboost_shap_analysis.ipynb).
 
 - **Dataset:** 2,073 soil samples across 5 major crops (Castor, Cumin, Guava, Papaya, Brinjal) from [`Final_soil_new_clean_data_updated_modified (1).csv`](Final_soil_new_clean_data_updated_modified%20(1).csv).
 - **Target:** `Soil_Status_Binary` (Unhealthy = 0: 1,137 samples; Healthy = 1: 936 samples).
@@ -85,6 +85,53 @@ The historical exploratory branch is archived in [`notebooks_only_repo/notebooks
 | Diagnostic Proxy (with raw `Conductivity` rule) | 54 | **99.83%** | **99.84%** | **1.0000** | **99.82%** | Reconstructs the internal dataset labelling rule |
 | Independent Research Model (Excl. proxy artifacts) | 53 | 54.09% | 52.34% | 0.5241 | 51.32% | Non-conductive baseline without spectral index feature engineering |
 | **New Optimized Clean Model ([Notebook 14](notebooks/14_soil_xgboost_shap_analysis.ipynb))** | **23** | **90.60% – 91.81%** | **89.62%** | **0.9321 – 0.9525** | **90.26% – 91.56%** | **Production-grade generalizable model with SHAP interpretability** |
+
+---
+
+### Precision Fertilizer Recommendation & Crop Recovery Engine (Notebook 15)
+
+The autonomous decision support system for translating diagnostic findings (from Leaf Disease CNNs and Soil Chemical sensors) into actionable chemical prescriptions, soil amendments, dosages, and recovery advisories is implemented in [`notebooks/15_fertilizer_recommendation_xgboost_shap.ipynb`](notebooks/15_fertilizer_recommendation_xgboost_shap.ipynb).
+
+- **Knowledge Base Dataset:** 122 expert agricultural diagnostic rules covering 5 cash crops (**Guava, Papaya, Brinjal, Cumin, Castor**) spanning Biotic and Abiotic conditions from [`Final Fertilizer recovery sheet.xlsx`](Final%20Fertilizer%20recovery%20sheet.xlsx).
+- **Target Standardization (9 Mutually Exclusive Intervention Classes):**
+  1. `Nitrogenous_Fertilizer (Urea)`
+  2. `Phosphatic_Fertilizer (SSP/DAP)`
+  3. `Potassic_Fertilizer (MOP/SOP)`
+  4. `Micronutrient_Supplement (Zn/Fe/B/S/Mg)`
+  5. `Soil_Amendment (Gypsum/Lime)`
+  6. `Chemical_Fungicide (Mancozeb/Copper)`
+  7. `Targeted_Insecticide (Pest/Vector)`
+  8. `Bio_Control_Organic_Care (Trichoderma/FYM)`
+  9. `No_Chemical_Fertilizer (Toxicity/Flushing)` — Essential agronomic intervention to cease fertilization upon detecting toxic excess.
+- **Smart ML Engineering & Feature Necessity Audit:**
+  - **Discarded / Non-Predictive:** `CNN_Label_ID` (arbitrary 0–121 row index memorized by trees).
+  - **Discarded from Input (Target Leakage):** `Dosage (gm or ml per liter / plant)` and `Farmer Advisory / Recovery Suggestion` (downstream prescription outputs, not input sensor features).
+  - **Retained & Harmonized Predictors:** `Crop`, `Type` (Biotic vs Abiotic), `Param_Clean` (15 standardized physiological domains), `Parameter Level (Low/High)`, and composite stress terms (`Param_x_Level`).
+- **Trained Model Artifacts:**
+  - [`models/xgb_fertilizer_recommendation_best.pkl`](models/xgb_fertilizer_recommendation_best.pkl)
+  - [`models/xgb_fertilizer_recommendation_best.json`](models/xgb_fertilizer_recommendation_best.json)
+  - [`models/xgb_fertilizer_recommendation_best.joblib`](models/xgb_fertilizer_recommendation_best.joblib)
+  - Feature schema: [`models/fertilizer_model_features.json`](models/fertilizer_model_features.json)
+  - Master prescription & advisory database: [`models/fertilizer_prescriptions_lookup.json`](models/fertilizer_prescriptions_lookup.json)
+
+#### 📊 Model Performance & Verification Metrics
+
+| Metric | Result | Interpretation |
+| :--- | :---: | :--- |
+| **Stratified 5-Fold CV Accuracy** | **96.01%** | Consistent generalization across cross-validation folds |
+| **Test Set Accuracy (Holdout 20%)** | **92.62%** | High multiclass classification accuracy (226 / 244 test samples correct) |
+| **Weighted F1-Score** | **93.28%** | Support-weighted harmonic mean across all 9 intervention classes |
+| **Macro F1-Score** | **91.26%** | Balanced performance across both frequent and rare intervention types |
+| **Multi-Class ROC-AUC (OvR)** | **0.9986** | Near-perfect probability calibration and ranking |
+
+#### 🔬 Explainable AI (SHAP) & Publication-Ready Figures (300 DPI)
+- **Global Feature Weights:** SHAP TreeExplainer reveals that interaction between parameter domain and deficiency/excess direction (`Param_x_Level`) dominates tree splits, followed by etiology (`Type_Biotic` vs `Type_Abiotic`) and crop species.
+- **Publication Figures generated for PhD Research:**
+  1. `results/fig_fertilizer_target_distribution.png` — Distribution of target intervention classes and crop stress profiles.
+  2. `results/fig_fertilizer_confusion_matrix.png` — Normalized multiclass confusion matrix and One-vs-Rest ROC curves.
+  3. `results/fig_fertilizer_shap_global_summary.png` — Top 15 influential agronomic features from global SHAP attribution.
+  4. `results/fig_fertilizer_shap_dependence.png` — 6-panel Multi-Class SHAP attribution grid showing physiological stress-to-chemical mappings.
+  5. `results/fig_fertilizer_shap_waterfall.png` — Local waterfall plots demonstrating exact decision logic for Nitrogen deficiency (Urea), Salinity (Gypsum), and Toxicity (Ceasing fertilizer).
 
 ---
 
@@ -204,7 +251,8 @@ cnn_model/
 │   ├── 11_prediction_testing.ipynb
 │   ├── 12_tflite_conversion.ipynb
 │   ├── 13_gradcam_explainability.ipynb
-│   └── 14_soil_xgboost_shap_analysis.ipynb
+│   ├── 14_soil_xgboost_shap_analysis.ipynb
+│   └── 15_fertilizer_recommendation_xgboost_shap.ipynb
 ├── models/                           # Training scripts and saved model weights
 ├── utils/                            # Reusable utilities
 ├── results/                          # Outputs, plots, and reports
@@ -242,6 +290,10 @@ cnn_model/
 ### Phase 4: Soil Health Modeling & Explainable AI (SHAP)
 
 1. `14_soil_xgboost_shap_analysis.ipynb` — Leakage-free feature curation, Stratified 5-Fold XGBoost hyperparameter tuning, multi-cycle validation, and global & local SHAP interpretability analysis.
+
+### Phase 5: Precision Fertilizer Recommendation & Crop Recovery
+
+1. `15_fertilizer_recommendation_xgboost_shap.ipynb` — Diagnostic etiology categorization, multiclass fertilizer/recovery recommendation XGBoost model, publication-quality 300 DPI figures, multi-class SHAP attribution, and production inference lookup pipeline.
 
 ---
 

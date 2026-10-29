@@ -1,0 +1,11 @@
+{
+    "0": "Bio_Control_Organic_Care (Trichoderma/FYM)",
+    "1": "Chemical_Fungicide (Mancozeb/Copper)",
+    "2": "Micronutrient_Supplement (Zn/Fe/B/S/Mg)",
+    "3": "Nitrogenous_Fertilizer (Urea)",
+    "4": "No_Chemical_Fertilizer (Toxicity/Flushing)",
+    "5": "Phosphatic_Fertilizer (SSP/DAP)",
+    "6": "Potassic_Fertilizer (MOP/SOP)",
+    "7": "Soil_Amendment (Gypsum/Lime)",
+    "8": "Targeted_Insecticide (Pest/Vector)"
+}
