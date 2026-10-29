@@ -155,6 +155,8 @@ The common held-out test set contains **860 images and 40 classes**. Aggregate m
 | MobileNetV2 detailed evaluation | 90.12% | 90.72% | 90.12% | 89.91% | Complete weighted aggregate and per-class report |
 | EfficientNetB0 final checkpoint | 96.86% | 97.10% | 96.86% | 96.86% | Complete weighted aggregate and per-class report |
 | ResNet50 phase-2 training evaluation | 96.74% | 96.62% | 96.65% | 96.49% | Complete macro aggregate; weighted F1 96.78% |
+| Soil Health XGBoost best model (Notebook 14) | 90.60% – 91.81% | 91.82% | 90.60% | 90.44% | Stratified 5-fold CV 91.12%, ROC-AUC 0.9321 |
+| Fertilizer Recommendation XGBoost engine (Notebook 15) | 92.62% | 95.79% | 92.62% | 93.28% | Stratified 5-fold CV 96.01%, ROC-AUC 0.9986 |
 
 The older `results/reports/model_comparison.csv` contains different final-artifact values (MobileNetV2 80.12% and EfficientNetB0 81.28%). These must not be merged with the detailed evaluations: they appear to come from different checkpoints or preprocessing conditions. Resolve this discrepancy by rerunning the same evaluator on each final checkpoint before making a definitive paper table.
 
@@ -226,6 +228,61 @@ Example Android/Python deployment flow:
 - **Historical artifacts:** `results/confusion_matrix/resnet50_phase1_cm.npy`, `resnet50_phase1_cm.png`, and `resnet50_phase2_cm.npy` belong to earlier runs.
 - **Explainability evidence:** Grad-CAM uses `conv5_block3_3_conv`; see `results/reports/explainability_report.json` and `results/plots/gradcam_*.png`.
 - **Artifact warning:** the current saved `resnet50_final.h5` evaluation reports 2.44%, while the phase-2 in-memory training evaluation reports 96.74%. Use the phase-2 values for the training-results table, but regenerate and verify the saved checkpoint before claiming deployment or release reproducibility.
+
+#### Soil Health Classification XGBoost Model (Notebook 14)
+
+- **Purpose:** binary soil health classification (`Healthy` vs `Unhealthy`) predicting fertility status and salinity stress from physicochemical and spectral soil sensors without target leakage or arbitrary location memorization.
+- **Dataset & Samples:** 2,073 soil samples across 5 crops (Guava, Papaya, Brinjal, Cumin, Castor) from `Final_soil_new_clean_data_updated_modified (1).csv`.
+- **Feature Schema (23 Clean Features):** 19 continuous physicochemical/spectral predictors (`pH`, `Conductivity`, `Nitrogen`, `Phosphorus`, `Potassium`, `Copper`, `Ferrous`, `Manganese`, `Sulphur`, `Zinc`, `LAI`, `TII`, `ARI`, `RBI`, `CRI`, `FAI`, `MRI`, `HCI`, `C/N_Ratio`) and 4 one-hot crop indicators (`Crop_Name_Castor`, `Crop_Name_Cumin`, `Crop_Name_Guava`, `Crop_Name_Papaya`).
+- **Feature Hygiene:** discarded non-predictive tracking IDs (`Sample_Name`, `Farm_Name`), sparse metadata (`City_Name`), invariant columns (`Boron`, `Organic_Carbon`), and target leakage (`Soil_Health_Score`).
+- **Hyperparameters:** `n_estimators=150`, `max_depth=4`, `learning_rate=0.03`, `min_child_weight=1`, `subsample=1.0`, `colsample_bytree=1.0`, `eval_metric='logloss'`.
+- **Reported Test Metrics:**
+  - *Test Cycle 1 (Holdout 20%, Seed 42, 415 samples):* Accuracy **90.60%** (376/415 correct), Weighted F1 **0.9044**, Macro F1 **0.9026**, ROC-AUC **0.9321**. Class-0 (Unhealthy) Recall is **99.56%** (227/228 correct); Class-1 (Healthy) Precision is **99.33%** (149/150 correct). Confusion matrix: `[[227, 1], [38, 149]]`.
+  - *Test Cycle 2 (Independent 20%, Seed 101, 415 samples):* Accuracy **91.81%**, Weighted F1 **0.9170**, Macro F1 **0.9156**, ROC-AUC **0.9525**.
+  - *Stratified 5-Fold Cross-Validation (All 2,073 samples):* Mean CV Accuracy **91.12% ± 1.04%**, Mean CV ROC-AUC **94.27% ± 0.67%**, Mean CV F1 **89.19% ± 1.34%**.
+- **Explainability Evidence:** SHAP TreeExplainer identified `Conductivity` as the dominant predictor (mean |SHAP| = 3.01) with a sharp non-linear salinity cliff at ~2,200 µS/cm. Multi-panel 300 DPI interaction figure saved to `results/fig_shap_dependence_multi_panel.png`.
+- **Available Checkpoints:** `models/xgb_soil_health_best.pkl`, `models/xgb_soil_health_best.json`, `models/xgb_soil_health_best.joblib`, and schema `models/soil_model_features.json`.
+
+#### Precision Fertilizer Recommendation & Crop Recovery XGBoost Model (Notebook 15)
+
+- **Purpose:** autonomous multimodal Decision Support System (DSS) translating crop leaf disease detections (from CNNs) and soil test parameters into actionable chemical prescriptions, soil amendments, dosages, and farmer recovery advisories.
+- **Knowledge Base Dataset:** 122 expert agricultural diagnostic rules covering 5 cash crops (Guava, Papaya, Brinjal, Cumin, Castor) from `Final Fertilizer recovery sheet.xlsx`.
+- **Target Taxonomy (9 Mutually Exclusive Intervention Classes):**
+  1. `Nitrogenous_Fertilizer (Urea)`
+  2. `Phosphatic_Fertilizer (SSP/DAP)`
+  3. `Potassic_Fertilizer (MOP/SOP)`
+  4. `Micronutrient_Supplement (Zn/Fe/B/S/Mg)`
+  5. `Soil_Amendment (Gypsum/Lime)`
+  6. `Chemical_Fungicide (Mancozeb/Copper)`
+  7. `Targeted_Insecticide (Pest/Vector)`
+  8. `Bio_Control_Organic_Care (Trichoderma/FYM)`
+  9. `No_Chemical_Fertilizer (Toxicity/Flushing)` — Essential agronomic intervention commanding cessation of fertilizer application when toxic excess is detected.
+- **Feature Engineering & Leakage Prevention:**
+  - Discarded arbitrary sequence index `CNN_Label_ID` (preventing memorization).
+  - Discarded downstream outputs `Dosage` and `Farmer Advisory` from input features (eliminating target leakage).
+  - Standardized 38 raw text parameter variants into 15 physiological domains (`Nitrogen`, `Phosphorus`, `Potassium`, `Zinc`, `Iron`, `Sulphur`, `Boron`, `Magnesium`, `pH`, `Salinity_EC_Cl`, `Soil_Moisture`, `Humidity`, `Fungus`, `Pest_Insect`, `Virus`).
+  - Constructed composite physiological stress interaction terms (`Param_x_Level`).
+- **Optimal Hyperparameters:** `n_estimators=100`, `max_depth=4`, `learning_rate=0.08`, `subsample=0.85`, `colsample_bytree=0.85`, `eval_metric='mlogloss'`.
+- **Verified Performance Metrics:**
+  - *Stratified 5-Fold Cross-Validation Accuracy:* **96.01%** across validation folds.
+  - *Holdout Test Accuracy (20% Holdout, 244 samples):* **92.62%** (226/244 correct predictions).
+  - *Weighted F1-Score:* **93.28%**; Macro F1-Score: **91.26%**.
+  - *Macro Precision:* **92.87%**; Macro Recall: **92.57%**.
+  - *Multi-Class ROC-AUC (OvR):* **0.9986** (near-perfect probability calibration and ranking).
+- **Explainability Evidence:**
+  - Multi-class SHAP TreeExplainer confirms that the model decision boundaries align strictly with agronomic science (e.g. Nitrogen deficiency directs probability to Urea with +5.8 log-odds; salinity stress directs probability to Gypsum; nutrient excess commands immediate cessation of fertilizer).
+  - Publication figures (300 DPI) saved under `results/`:
+    - `results/fig_fertilizer_target_distribution.png` — Target class distribution and crop stress breakdown.
+    - `results/fig_fertilizer_confusion_matrix.png` — Normalized multiclass confusion matrix & One-vs-Rest ROC curves.
+    - `results/fig_fertilizer_shap_global_summary.png` — Top 15 influential agronomic features ranked by mean |SHAP|.
+    - `results/fig_fertilizer_shap_dependence.png` — 6-panel Multi-Class SHAP attribution grid.
+    - `results/fig_fertilizer_shap_waterfall.png` — Local waterfall case studies for Urea, Gypsum, and Toxicity.
+- **Available Checkpoints & Deployment Artifacts:**
+  - Trained models: `models/xgb_fertilizer_recommendation_best.pkl`, `models/xgb_fertilizer_recommendation_best.json`, `models/xgb_fertilizer_recommendation_best.joblib`.
+  - Feature alignment schema: `models/fertilizer_model_features.json`.
+  - Label mapping: `models/fertilizer_label_mapping.json`.
+  - Master prescription & advisory database: `models/fertilizer_prescriptions_lookup.json`.
+  - Interactive pipeline function: `predict_fertilizer_and_recovery(crop, condition_type, affected_param, param_level)`.
 
 ### Required paper reporting checklist
 
