@@ -1,0 +1,134 @@
+CNN_Label_ID,Crop,Leaf Disease / Condition,Type,Affected Parameter,Parameter Level (Low/High),Value,Recommended Fertilizer / Pesticide,Dosage (gm or ml per liter / plant),Farmer Advisory / Recovery Suggestion
+0,Guava,Anthracnose ,Biotic,Humidity,High,,Copper Oxychloride or Mancozeb or Azoxystrobin ,3 gm / Litre water or Azoxystrobin 0.5–0.7 ml/L,Prune infected branches and burn them; spray before monsoon.
+1,Guava,Guava Wilt,Biotic,Soil Moisture,High,,Carbendazim or Trichoderma viride,2 gm / Litre (Drenching),Avoid water stagnation near roots; treat soil with lime before planting.
+2,Guava,Cercospora leaf spot,Biotic,Humidity,High,,"Mancozeb,Neem oil 0.3% spray,Dithane-M-45", 2–2.5 g/L,Spray  10–15 days during continuous humidity
+3,Guava,Algal leaf spot(Red Rust),Biotic,Humidity,High,,"Copper oxychloride,Panchgavya 3% spray",3 gm / Litre water,"Every 10–15 days during continuous humidity,Reduce overcrowding of trees to allow sunlight and air circulation."
+4,Guava,Zinc Deficiency (Bronzing),Abiotic,Soil Zinc (Zn),Low,<0.5 mg/kg,Zinc Sulphate (ZnSO4) or 	Panchgavya 3% spray,5 gm / Litre water,Spray twice: once during new flush and again during fruit set.
+5,Guava,Zinc Excess,Abiotic,Soil Zinc (Zn),High,>5 mg/kg,,,"Apply FeSO₄ spray,Stop Zn"
+6,Guava,Iron deficiency,Abiotic,Iron,Low,<4 mg/kg,Jeevamrut soil drenching or FYM / compost or Feras Salfar,0.5% foliar spray== 5 g FeSO₄ + 2.5 g lime / litre,Sparay it into tree or every year spray 10–15g per plant (Young) / 100g per plant (Adult) in soil
+7,Guava,Iron Excess,Abiotic,Iron,High,>50 mg/kg,,,"Improve drainage,Avoid iron sprays,Avoid waterlogging"
+8,Guava,Nitrogen Deficiency,Abiotic,Soil Nitrogen (N),Low,<250 mg/kg,Urea or  Ammonium Sulphate,15-20 gm / Litre water,Apply as a foliar spray to correct yellowing of older leaves.
+9,Guava,Nitrogen Excess,Abiotic,Soil Nitrogen (N),High,>500 mg/kg,,,"Stop urea / nitrogen fertilizers,Apply Potassium (MOP) 200–250 g/tree,
+Apply Phosphorus (SSP) 300–500 g/tree,
+Increase irrigation slightly to reduce N concentration"
+10,Guava,Potassium deficiency,Abiotic,Potassium,Low,<150 mg/kg,MOP or Wood ash,200–250 g / tree / year or 1–1.5 kg/tree(wood ash),
+11,Guava,Potassium Excess,Abiotic,Potassium,High,>800 mg/kg,,,"Stop MOP,Calcium nitrate 1% foliar spray,Magnesium sulphate 1% foliar spray"
+12,Guava,Phosphorus deficiency,Abiotic,Phosphorus,Low,<10 mg/kg,Single Super Phosphate (SSP) or Bone meal,500 g / tree / year(SSP) or 250–300 g/tree(Bone),
+13,Guava,Phosphorus Excess,Abiotic,Phosphorus,High,>60 mg/kg,,,"Stop SSP/DAP,ZnSO₄ 0.5% foliar spray,
+FeSO₄ 0.5% foliar spray,
+Add organic matter"
+14,Guava,pH deficiency,Abiotic,pH,Low,<5.5,,,
+15,Guava,pH Excess,Abiotic,pH,High,> 8.5  ,,,"Apply Ferrous sulphate (FeSO₄) 25–50 kg/ha (soil application),
+Apply Zinc sulphate (ZnSO₄) 25 kg/ha,Add organic matter (FYM / compost) 20–25 kg/tree,
+Use acid-forming fertilizers (ammonium sulphate),
+Foliar support"
+16,Guava,EC Salinity,Abiotic,EC ,High,> 2000 Aus/cm,,,"Stop chemical fertilizers temporarily,Apply Gypsum 250–500 kg/ha,
+Add organic manure (FYM/vermicompost)"
+17,Guava,Sulphur deficiency,Abiotic,Sulphur,Low,< 5 mg/kg,FYM / compost,"Gypsum: 250–500 kg/ha,Ammonium sulphate: 100–150 g/tree,Elemental sulphur: 25 kg/ha",Apply Sulphur-containing fertilizers
+18,Guava,Sulphur Excess,Abiotic,Sulphur,High,> 50 mg/kg,,,"Stop sulphur fertilizers,Apply lime if soil becomes acidic,
+Add organic matter"
+19,Guava,Chloride (Cl) Toxicity deficiency,Abiotic,HCI,Low,< 0.5,,,Maintain balanced fertilization
+20,Guava,Chloride (Cl) Toxicity Excess,Abiotic,HCI,High,> 10,"Gypsum,Jeevamrut soil drenching",250–500 kg/ha,"Stop chemical fertilizers temporarily,Reduce salt concentration,Improve drainage,Apply organic manure"
+21,Guava,Boron deficiency,Abiotic,Boron,Low,<0.5 mg/kg,"Borax,Panchgavya 3% spray",0.1% spray=0.1% sprayOnly once (toxic if excess!),Apply boron carefully (VERY small dose)
+22,Guava,Boron Excess,Abiotic,Boron,High,>2 mg/kg,,,"STOP all boron application immediately,Heavy irrigation (leaching),Apply gypsum"
+23,Papaya,Powdery Mildew,Biotic,Fungus,High,,Hexaconazole or Wettable Sulphur,1 ml/L or 2 g/L,Spray during cool hours; ensure coverage on the underside of leaves.
+24,Papaya,Anthracnose,Biotic,Humidity,High,,Propiconazole or Carbendazim,1 g/L (foliar spray),Remove infected fruits and leaves; spray at 10–15 day interval
+25,Papaya,Black spot,Biotic,Humidity,High,,Chlorothalonil,2 g/L (foliar spray),Avoid overhead irrigation; ensure air circulation
+26,Papaya,Mosaic virus,Biotic,Virus,High,,Dimethoate or Imidacloprid,0.3 ml/L (foliar spray),Control aphids early; remove infected plants
+27,Papaya, Leaf Curl,Biotic,Virus,High,,Thiamethoxam or Acetamiprid,0.5 ml / Litre water,"Remove and destroy infected plants immediately; install yellow sticky traps.Soil application of Carbofuran (1 kg a.i./ha) at the time of sowing and 4-5 foliar
+sprays of Dimethoate (0.05%) or Metasystox (0.02%) or Nuvacron (0.05%) at an
+interval of 10 days effectively controls the whitefly population."
+28,Papaya,Ring Spot Virus,Biotic,Virus,High,,Imidacloprid,0.3 ml/L,No chemical cure for virus; control the aphid vectors to prevent spread.
+29,Papaya,Leaf- Blight,Biotic,Humidity / Leaf Wetness,High,,Dithane M-45,2.5 g/L,Remove infected leaves
+30,Papaya,Root Rot (fungal),Biotic,Soil Moisture,High,,Trichoderma,5 g/plant (soil),Improve drainage
+31,Papaya,Zinc Deficiency,Abiotic,Soil Zinc (Zn),Low,<0.5 mg/kg,Zinc Sulphate (ZnSO₄) or Panchgavya 3% spray,5 g / L water,Spray twice: once during vegetative stage and again before flowering
+32,Papaya,Zinc Excess,Abiotic,Soil Zinc (Zn),High,>5 mg/kg,—,—,"Stop Zn application, apply FeSO₄ foliar spray"
+33,Papaya,Iron Deficiency,Abiotic,Iron (Fe),Low,<4 mg/kg,Jeevamrut soil drenching or FYM / compost or Ferrous sulphate,0.5% spray = 5 g FeSO₄ + 2.5 g lime / L,Spray 2–3 times at 15-day interval
+34,Papaya,Iron Excess,Abiotic,Iron (Fe),High,>50 mg/kg,—,—,"Improve drainage, avoid iron sprays, avoid waterlogging"
+35,Papaya,Nitrogen Deficiency,Abiotic,Soil Nitrogen (N),Low,<250 mg/kg,Urea or Ammonium Sulphate,15–20 g / L water,Foliar spray to correct yellowing of older leaves
+36,Papaya,Nitrogen Excess,Abiotic,Soil Nitrogen (N),High,>500 mg/kg,—,—,"Stop urea/nitrogen fertilizers, apply MOP 100–150 g/plant, improve irrigation"
+37,Papaya,Potassium Deficiency,Abiotic,Potassium (K),Low,<150 mg/kg,MOP or Wood ash,100–150 g/plant or 1 kg wood ash,"Improves fruit size, sweetness & firmness"
+38,Papaya,Potassium Excess,Abiotic,Potassium (K),High,>800 mg/kg,—,—,"Stop MOP, apply Calcium nitrate 1% spray, Magnesium sulphate 1% spray"
+39,Papaya,Phosphorus Deficiency,Abiotic,Phosphorus (P),Low,<10 mg/kg,Single Super Phosphate (SSP) or Bone meal,250–300 g/plant (SSP),Enhances root growth & flowering
+40,Papaya,Phosphorus Excess,Abiotic,Phosphorus (P),High,>60 mg/kg,—,—,"Stop SSP/DAP, ZnSO₄ 0.5% spray, FeSO₄ 0.5% spray, add organic matter"
+41,Papaya,pH deficiency,Abiotic,pH,Low,<5.5,—,—,"Apply lime if soil acidic, add organic matter"
+42,Papaya,pH Excess,Abiotic,pH,High,>8.5,"Ferrous sulphate, Zinc sulphate","FeSO₄ 25–50 kg/ha, ZnSO₄ 25 kg/ha","Use acid-forming fertilizers, apply FYM/compost"
+43,Papaya,EC deficiency,Abiotic,EC,Low,> 8.5  Aus/cm,—,—,Maintain balanced fertilization
+44,Papaya,EC Salinity,Abiotic,EC,High,> 2000 Aus/cm,"Gypsum, Jeevamrut soil drenching",250–500 kg/ha,"Stop chemical fertilizers, leaching irrigation, improve drainage"
+45,Papaya,Sulphur deficiency,Abiotic,Sulphur (S),Low,< 5 mg/kg,FYM / compost,"Gypsum 250–500 kg/ha, Ammonium sulphate 100 g/plant",Apply sulphur-containing fertilizers
+46,Papaya,Sulphur Excess,Abiotic,Sulphur (S),High,> 50 mg/kg,—,—,"Stop sulphur fertilizers, add organic matter, apply lime if needed"
+47,Papaya,Chloride (Cl) Toxicity deficiency,Abiotic,HCl / EC,Low,< 0.5,—,—,No correction required
+48,Papaya,Chloride (Cl) Toxicity Excess,Abiotic,HCl / EC,High,> 10,"Gypsum, Jeevamrut",250–500 kg/ha,"Reduce salinity, improve drainage, add organic manure"
+49,Papaya,Boron deficiency,Abiotic,Boron (B),Low,<0.5 mg/kg,"Borax, Panchgavya 3% spray",0.1% spray (ONLY once),Apply very carefully; excess causes toxicity
+50,Papaya,Boron Excess,Abiotic,Boron (B),High,>2 mg/kg,—,—,"Stop boron immediately, heavy irrigation, gypsum application"
+51,Brinjal,Leaf Spot,Biotic,Fungus,High,High humidity,Mancozeb,2.5 g/L,Remove infected leaves; spray at 10-day interval
+52,Brinjal,Phomopsis Blight,Biotic,Fungus,High,Warm & humid,Carbendazim,1 g/L,Avoid overhead irrigation; remove diseased shoots
+53,Brinjal,Bacterial Wilt,Biotic,Bacteria,High,High soil moisture & temperature,Streptocycline + Copper,0.1 g + 3 g/L,Improve drainage; uproot severely infected plants
+54,Brinjal,Little Leaf Disease,Biotic,Virus (vector-borne),High,High vector pressure,Imidacloprid,0.3 ml/L,Remove infected plants; control leafhopper early
+55,Brinjal,Leaf Curl Virus,Biotic,Virus (whitefly),High,High whitefly,Thiamethoxam,0.3 g/L,Control vectors early; remove infected leaves
+56,Brinjal,Fruit & Shoot Borer,Biotic,Insect,High,Warm climate,Emamectin Benzoate,0.4 g/L,Remove infested shoots weekly; spray in evening
+57,Brinjal,Early Blight,Biotic,Humidity,High,Warm + humid weather,Mancozeb,2 g/L,Remove infected leaves; spray at 7–10 day interval; avoid overhead irrigation
+58,Brinjal,Late Blight,Biotic,Humidity,High,Cool + humid weather,Cymoxanil + Mancozeb,2 g/L,Spray immediately after symptom appearance; repeat after 7 days; ensure proper field drainage
+59,Brinjal,Damping Off (Nursery),Biotic,Soil Moisture,High,,Trichoderma viride,5 g/kg seed,Treat seeds before sowing; avoid overcrowding seedlings in nursery.
+60,Brinjal,Root Rot,Biotic,Soil Moisture,High,,Copper Oxychloride,3 g/L (Drench),Drench soil around the stem; improve field drainage immediately.
+61,Brinjal,Sucking Pests (Jassids/Aphids),Biotic,Vector Count,High,,Imidacloprid,0.3 ml/L,These vectors spread Little Leaf Disease. Use yellow sticky traps.
+62,Brinjal,Red Spider Mite,Biotic,Temperature,High,,Spiromesifen or Wettable Sulphur,1 ml/L or 2 g/L,"Mites cause ""webbing"" under leaves. Spray on underside of leaves."
+63,Brinjal,Nitrogen Deficiency,Abiotic,Soil Nitrogen (N),Low,<250 mg/kg,Urea / Ammonium Sulphate,15–20 g/L (foliar),Spray to correct yellowing of older leaves; apply in evening
+64,Brinjal,Nitrogen Excess,Abiotic,Soil Nitrogen (N),High,>500 mg/kg,—,—,Stop urea; apply MOP 100–150 g/plant to balance growth
+65,Brinjal,Phosphorus Deficiency,Abiotic,Phosphorus (P),Low,<150 mg/kg,Single Super Phosphate,50–100 g/plant,Improves root growth and flowering
+66,Brinjal,Phosphorus Excess,Abiotic,Phosphorus (P),High,>800 mg/kg,—,—,Stop SSP/DAP; apply ZnSO₄ & FeSO₄ foliar spray
+67,Brinjal,Potassium Deficiency,Abiotic,Potassium (K),Low,<10 mg/kg,MOP / Wood ash,100–150 g/plant,"Improves fruit size, firmness, and shelf life"
+68,Brinjal,Potassium Excess,Abiotic,Potassium (K),High,>60 mg/kg,—,—,Stop MOP; apply Calcium nitrate 1% + Magnesium sulphate 1% spray
+69,Brinjal,Zinc Deficiency,Abiotic,Zinc (Zn),Low,<0.5 mg/kg,Zinc Sulphate,0.5% (5 g/L),Spray twice at 15-day interval; avoid excess phosphorus
+70,Brinjal,Zinc Excess,Abiotic,Zinc (Zn),High,>5 mg/kg,—,—,Stop Zn application; apply FeSO₄ foliar spray
+71,Brinjal,Iron Deficiency,Abiotic,Iron (Fe),Low,<4 mg/kg,Ferrous Sulphate,50 g / 10 L water,Spray in morning; avoid alkaline water; repeat after 15 days
+72,Brinjal,Iron Excess,Abiotic,Iron (Fe),High,>50 mg/kg,—,—,Improve drainage; avoid iron sprays and waterlogging
+73,Brinjal,Boron Deficiency,Abiotic,Soil Boron,Low,<0.5 mg/kg,Borax or Solubor,2 g/L (Spray),Crucial to prevent Fruit Cracking and deformed shapes.
+74,Brinjal,Boron Toxicity,Abiotic,Soil Boron,High,>2 mg/kg,Gypsum,200 g/m²,Leaching with heavy irrigation; stop Boron application immediately.
+75,Brinjal,Sulphur Deficiency,Abiotic,Soil Sulphur,Low,< 5 mg/kg,Wettable Sulphur or Gypsum,2 g/L (Spray) or 200 kg/ha,Yellowing of young leaves. Apply Gypsum during land preparation.
+76,Brinjal,Magnesium Deficiency,Abiotic,Soil Magnesium,Low,<1 meq/100g,Magnesium Sulphate,5 g/L (Spray),Corrects interveinal chlorosis (yellowing between veins) on older leaves.
+77,Brinjal,Soil Acidity (Low pH),Abiotic,pH,Low,< 5.5,Agricultural Lime,250 g/m²,Mix lime in soil 15 days before planting to raise pH.
+78,Brinjal,Soil Alkalinity (High pH),Abiotic,pH,High,> 8.5,Gypsum,500 g/m²,Apply Gypsum and plenty of organic matter (FYM) to lower pH.
+79,Brinjal,Salinity Stress (High EC),Abiotic,EC,High,> 2000 Aus/cm,Organic Mulch,-,Improve drainage; avoid saline irrigation water; use salt-tolerant varieties.
+80,Brinjal,Chloride Toxicity,Abiotic,Chloride (Cl),High,>10 ,Sulphate of Potash (SOP),-,Avoid MOP (KCl) fertilizer; use SOP instead to avoid adding more chloride.
+81,Cumin,Alternaria Blight (Kaliyo),Biotic,Cloudiness,High,,Mancozeb or Chlorothalonil,25 g / 10 L,Spray immediately if sky is cloudy; crucial to prevent crop blackening.
+82,Cumin,Fusarium Wilt (Sukaro),Biotic,Soil Temperature,High,,Trichoderma viride,2.5 kg/ha (Soil),Apply with castor cake before sowing; rotate crop every 3 years.
+83,Cumin,Powdery Mildew (Chharo),Biotic,Temperature,High,,Sulphur Powder (300 Mesh),25 kg/ha (Dusting),Dust sulphur in early morning hours; effective against white powder growth.
+84,Cumin,Aphids (Molo-Mashi),Biotic,Pest Count,High,,Thiamethoxam or Dimethoate,5 g / 10 L or 10 ml / 10 L,"Heavy infestation causes sticky ""honey dew"" on plants. Spray immediately."
+85,Cumin,Thrips,Biotic,Pest Count,High,,Spinosad or Fipronil,3 ml / 10 L,Causes leaf curling and silvering. Use blue sticky traps.
+86,Cumin,Nitrogen Deficiency,Abiotic,Soil Nitrogen (N),Low,<250 mg/kg,Urea / Ammonium Sulphate,10–15 g/L (foliar),Spray at early vegetative stage
+87,Cumin,Nitrogen Excess,Abiotic,Soil Nitrogen (N),High,>500 mg/kg,,,Stop urea; excess N increases disease
+88,Cumin,Phosphorus Deficiency,Abiotic,Phosphorus (P),Low,<150 mg/kg,DAP (Diammonium Phosphate),50 kg/ha (Basal),Crucial for root establishment; apply only at sowing time.
+89,Cumin,Phosphorus Excess,Abiotic,Phosphorus (P),High,>800 mg/kg,,,Stop SSP/DAP; apply Zn & Fe spray
+90,Cumin,Potassium Deficiency,Abiotic,Potassium (K),Low,<10 mg/kg,Sulphate of Potash (SOP),5 g / 10 L (Spray),Essential for seed quality and weight.
+91,Cumin,Potassium Excess,Abiotic,Potassium (K),High,>60 mg/kg,,,Stop MOP; apply Ca & Mg
+92,Cumin,Zinc Deficiency,Abiotic,Zinc (Zn),Low,<0.5 mg/kg,Zinc Sulphate,0.5% (5 g/L),Spray at branching stage
+93,Cumin,Zinc Excess,Abiotic,Zinc (Zn),High,>5 mg/kg,,,Stop Zn; apply FeSO4 spray
+94,Cumin,Iron Deficiency,Abiotic,Iron (Fe),Low,<4 mg/kg,Ferrous Sulphate,0.5% spray,Spray in early morning
+95,Cumin,Iron Excess,Abiotic,Iron (Fe),High,>50 mg/kg,,,Improve drainage
+96,Cumin,Sulphur Deficiency,Abiotic,Sulphur (S),Low,< 5 mg/kg,Bentonite Sulphur,20 kg/ha (Soil),Cumin is an oilseed spice; Sulphur increases volatile oil content (aroma).
+97,Cumin,Sulphur Excess,Abiotic,Sulphur (S),High,> 50 mg/kg,,,Stop sulphur fertilizers
+98,Cumin,pH Stress,Abiotic,pH,High,>8.5,FeSO4 + ZnSO4,25 kg/ha each,Use acid-forming fertilizers
+99,Cumin,EC Stress,Abiotic,EC,High,> 2000 Aus/cm,Gypsum,500 kg/ha,Cumin is very sensitive to salt. Improve drainage or use organic mulch.
+100,Cumin,Moisture Stress (Wilting),Abiotic,Soil Moisture,Low,Dry Soil,Light Irrigation,-,"Cumin needs light, frequent irrigation. Avoid flood irrigation (causes Wilt)."
+101,Cumin,Moisture Excess (Root Rot),Abiotic,Soil Moisture,High,Waterlog,Trichoderma + Sand Mix,-,Stop irrigation immediately. Mix Trichoderma with sand and apply near roots.
+102,Castor,Fusarium Wilt,Biotic,Fungus,High,Soil-borne,Carbendazim or Trichoderma,10 g / 10 L (Drench),Major threat. Treat seeds before sowing (3g/kg). Use resistant varieties like GCH-7.
+103,Castor,Cercospora Leaf Spot,Biotic,Fungus,High,Humidity / Rain,Carbendazim,10 g / 10 L,Appears after cyclonic rains or heavy fog. Shake plants manually to remove water droplets.
+104,Castor,Alternaria Leaf Blight,Biotic,Fungus,High,Warm & humid,Mancozeb,25 g / 10 L,Spray when brown concentric rings appear on leaves to prevent spread.
+105,Castor,Semilooper (Caterpillar),Biotic,insect,High,Warm climate,Profenofos or Chlorpyriphos,20 ml / 10 L,Voracious eater. Handpick large larvae. Encourage birds (natural predators) in field.
+106,Castor,Capsule Borer,Biotic,Temp / Humidity,High,Warm climate,Acephate or Spinosad,15 g / 10 L,Spray at capsule formation stage. Remove infested spikes immediately.
+107,Castor,Leaf Miner,Biotic,Pest Count,Mod,Visual Mines,Dimethoate,10 ml / 10 L,Larvae create zig-zag tunnels in leaves. Remove and burn heavily infested leaves.
+108,Castor,Nitrogen Deficiency,Abiotic,Soil Nitrogen (N),Low,<250 mg/kg,Urea / Ammonium Sulphate,15–20 g/L (foliar),"Castor is a heavy feeder. Apply N in 3 splits (30, 60, 90 days) for best yield."
+109,Castor,Nitrogen Excess,Abiotic,Soil Nitrogen (N),High,>500 mg/kg,,,"Stop nitrogen fertilizers; balance with K,"
+110,Castor,Phosphorus Deficiency,Abiotic,Phosphorus (P),Low,<150 mg/kg,Single Super Phosphate,200–250 g/plant,Improves root development
+111,Castor,Phosphorus Excess,Abiotic,Phosphorus (P),High,>800 mg/kg,,,Stop SSP/DAP; apply Zn & Fe spray
+112,Castor,Potassium Deficiency,Abiotic,Potassium (K),Low,<10 mg/kg,MOP,100–150 g/plant,Improves seed filling
+113,Castor,Potassium Excess,Abiotic,Potassium (K),High,>60 mg/kg,,,Stop MOP; apply Ca & Mg spray
+114,Castor,Zinc Deficiency,Abiotic,Zinc (Zn),Low,<0.5 mg/kg,Zinc Sulphate,0.5% (5 g/L),Spray at vegetative stage
+115,Castor,Zinc Excess,Abiotic,Zinc (Zn),High,>5 mg/kg,,,Stop Zn application
+116,Castor,Iron Deficiency,Abiotic,Iron (Fe),Low,<4 mg/kg,Ferrous Sulphate,0.5% spray,Spray in early morning
+117,Castor,Iron Excess,Abiotic,Iron (Fe),High,>50 mg/kg,,,Improve drainage
+118,Castor,Sulphur Deficiency,Abiotic,Sulphur (S),Low,< 5 mg/kg,Gypsum,20–25 kg/ha,Improves oil content
+119,Castor,Sulphur Excess,Abiotic,Sulphur (S),High,> 50 mg/kg,,,Stop sulphur fertilizers
+120,Castor,pH Stress,Abiotic,pH,High,>8.5,FeSO4 + ZnSO4,25 kg/ha each,Use acid-forming fertilizers
+121,Castor,EC Stress,Abiotic,EC,High,> 2000 Aus/cm,Gypsum,250 kg/ha,Improve drainage
