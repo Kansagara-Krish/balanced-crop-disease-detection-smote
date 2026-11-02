@@ -9,9 +9,9 @@ A reproducible research project for 40-class crop-leaf disease classification us
 This repository implements a complete workflow for crop leaf disease detection across multiple crop types.
 
 - **Crops:** Papaya, Guava, Brinjal, Castor, Cumin
-- **Task:** Healthy vs Unhealthy leaf disease classification
-- **Approaches:** Custom CNN baseline, MobileNetV2, EfficientNetB0, ResNet50
-- **Deliverables:** Trained models, evaluation reports, TFLite exports, Grad-CAM visualizations
+- **Task:** Healthy vs Unhealthy leaf disease classification, soil health diagnosis, and multimodal agronomic decision support
+- **Approaches:** Custom CNN baseline, MobileNetV2, EfficientNetB0, ResNet50, XGBoost Soil Health, XGBoost Fertilizer Recommendation Engine, and Rule-based Decision Integration
+- **Deliverables:** Trained models, evaluation reports, TFLite exports, Grad-CAM visualizations, SHAP interpretability, Decision-Level Integration module (`integration.py`), Recommendation Engine (`recommendation_engine.py`), Knowledge Base (`fertilizer_knowledge_base.csv`), Interactive UI (`app.py`), and CLI (`cli.py`).
 
 ### Soil Health XGBoost & SHAP Explainability Model
 
@@ -313,6 +313,14 @@ cnn_model/
 ├── models/                           # Training scripts and saved model weights
 ├── utils/                            # Reusable utilities
 ├── results/                          # Outputs, plots, and reports
+├── sample_inputs/                    # Sample soil scenarios for quick testing
+├── integration.py                    # Multimodal Decision-Level Integration controller
+├── recommendation_engine.py          # Rule-based agronomic synthesis & Model 2 wrapper
+├── fertilizer_knowledge_base.csv     # 122 validated crop diagnostic & fertilizer rules
+├── app.py                            # Interactive Streamlit Web Dashboard
+├── cli.py                            # Command-line interface for batch evaluation
+├── test_integration.py               # Automated 10-point integration & safety test suite
+├── DECISION_INTEGRATION_GUIDE.md     # Complete decision integration methodology guide
 ├── TRANSFER_LEARNING_GUIDE.md        # Transfer learning documentation
 ├── README.md                         # Project overview and instructions
 └── requirements.txt                  # Python dependencies
@@ -352,6 +360,15 @@ cnn_model/
 
 1. `15_fertilizer_recommendation_xgboost_shap.ipynb` — Diagnostic etiology categorization, multiclass fertilizer/recovery recommendation XGBoost model, publication-quality 300 DPI figures, multi-class SHAP attribution, and production inference lookup pipeline.
 
+### Phase 6: Multimodal Decision-Level Integration & Precision DSS
+
+1. `integration.py` — Primary integration controller connecting CNN Leaf Disease (EfficientNetB0/ResNet50/Baseline), Soil Health (XGBoost Model 1), and Precision Fertilizer (XGBoost Model 2) without model retraining.
+2. `recommendation_engine.py` — Rule-based agronomic synthesis engine resolving cross-modal conflicts (salinity lockout, nutrient toxicity, foliar vs soil deficiency), biotic vs abiotic separation, and crop mismatch guardrails.
+3. `fertilizer_knowledge_base.csv` — 122 expert agricultural diagnostic rules covering 5 cash crops (Guava, Papaya, Brinjal, Cumin, Castor) with validated chemical formulations, dosages, and recovery advisories.
+4. `test_integration.py` — Automated 10-point test suite verifying multimodal convergence, conflict handling, crop mismatch detection, low-confidence warnings, and sample pairing guardrails.
+5. `app.py` & `cli.py` — Interactive Streamlit web application dashboard and command-line interface for real-time field evaluation.
+6. `DECISION_INTEGRATION_GUIDE.md` — Comprehensive methodology guide detailing the architectural principles and agronomic decision rules for the PhD dissertation.
+
 ---
 
 ## 🚀 Quick Start
@@ -360,6 +377,31 @@ cnn_model/
 
 ```bash
 pip install -r requirements.txt
+```
+
+### Launch the Interactive Decision-Support Web App
+
+```bash
+streamlit run app.py
+```
+
+### Run Batch / Headless Diagnosis via CLI
+
+```bash
+# Full Multimodal Diagnosis (Leaf Image + Soil Sensors)
+python cli.py --crop Guava --image Final_images_phd/Guava/Healthy_Guava/Guava_Healthy_001.jpg --soil-json sample_inputs/sample_1_healthy_guava.json
+
+# Soil-Only Diagnosis
+python cli.py --crop Brinjal --soil-json sample_inputs/sample_2_salinity_stress_brinjal.json
+
+# Leaf-Only Diagnosis
+python cli.py --crop Cumin --image Final_images_phd/Cumin/Unhealthy_Cumin/Powdery_Mildew/aug_rot_001.jpg
+```
+
+### Run Automated Integration & Safety Test Suite
+
+```bash
+python test_integration.py
 ```
 
 ### Run the notebook pipeline
@@ -387,7 +429,9 @@ python train_resnet50.py
 - Evaluation metrics in `results/reports/`
 - Visualization plots in `results/plots/`
 - TFLite models in `models/tflite/`
-- Grad-CAM explainability outputs in notebooks and reports
+- Grad-CAM explainability outputs in notebooks, reports, and Streamlit app
+- Local SHAP waterfall and bar charts for soil fertility features
+- Validated agronomic prescriptions and farmer recovery advisories in `app.py` and CLI
 
 Mobile deployment artifacts include the Float32 and quantized TensorFlow Lite models, their conversion report, and model metadata. Keep these files together when packaging the mobile application.
 
@@ -396,16 +440,23 @@ Mobile deployment artifacts include the Float32 and quantized TensorFlow Lite mo
 ## ✅ Why this project is professional
 
 - Structured notebook workflow for reproducible research
-- Clear reporting and evaluation metrics
-- Transfer learning with production-ready architectures
+- Decision-level integration layer preserving trained model integrity without retraining
+- Explainable AI across all modalities (Grad-CAM for vision, SHAP for tabular soil health)
+- Validated agronomic knowledge base avoiding invented chemical dosages
+- Cross-modal conflict resolution preventing dangerous fertilizer overdosing during soil salinity/lockout
 - Mobile deployment via TensorFlow Lite
-- Explainable AI using Grad-CAM
+- Interactive Streamlit dashboard and batch CLI tool
 
 ---
 
 ## 🔍 Files to review first
 
 - `README.md` — Project summary and usage
+- `DECISION_INTEGRATION_GUIDE.md` — Complete multimodal decision-level integration methodology
+- `integration.py` — Multimodal integration pipeline controller
+- `recommendation_engine.py` — Rule-based agronomic synthesis and safety engine
+- `fertilizer_knowledge_base.csv` — Validated crop-specific diagnostic and recovery rules
+- `app.py` — Interactive Streamlit web application
 - `TRANSFER_LEARNING_GUIDE.md` — Detailed architecture and training guidance
 - `notebooks/` — Full development and experimentation pipeline
 - `models/` — Saved model weights and training scripts
