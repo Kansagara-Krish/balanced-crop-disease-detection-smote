@@ -1,6 +1,24 @@
 # Crop Leaf Disease Classification using TensorFlow / Keras
 
-A reproducible research project for 40-class crop-leaf disease classification using a custom CNN and ImageNet transfer-learning models. This README records the currently available evidence for each model so that results can be reused in a PhD paper without mixing metrics from different runs.
+A reproducible research project for 40-class crop-leaf disease classification using a custom CNN and ImageNet transfer-learning models. The current image dataset contains 40 distinct leaf-label folders: Brinjal (10), Castor (7), Cumin (5), Guava (9), and Papaya (9). This README records the currently available evidence for each model so that results can be reused in a PhD paper without mixing metrics from different runs.
+
+## Contents
+
+- [Project overview](#-project-overview)
+  - [Soil health model](#soil-health-xgboost--shap-explainability-model)
+  - [Fertilizer recommendation model](#precision-fertilizer-recommendation--crop-recovery-engine-notebook-15)
+- [Project highlights](#-highlights)
+- [Verified results and evidence](#-verified-results-and-evidence)
+  - [Model-by-model evidence](#model-by-model-evidence)
+  - [Mobile and edge deployment](#mobile-and-edge-deployment-models)
+  - [Paper reporting checklist](#required-paper-reporting-checklist)
+- [Repository structure](#-repository-structure)
+- [Workflow overview](#-workflow-overview)
+- [Quick start](#-quick-start)
+- [Expected outputs](#-expected-outputs)
+- [Why this project is professional](#-why-this-project-is-professional)
+- [Files to review first](#-files-to-review-first)
+- [Notes](#-notes)
 
 ---
 
@@ -147,7 +165,15 @@ The autonomous decision support system for translating diagnostic findings (from
 
 ## 📈 Verified Results and Evidence
 
-The common held-out test set contains **860 images and 40 classes**. Aggregate metrics below are percentages. The metric source is shown explicitly because the repository contains several checkpoints and historical experiments.
+The image folders under `Final_images_phd/` contain **40 distinct leaf-label classes**: Brinjal (10), Castor (7), Cumin (5), Guava (9), and Papaya (9). The `Healthy_*` and `Unhealthy_*` directories are grouping folders, not additional classes. The common held-out test set contains **860 images across those 40 classes**, matching the 40 labels recorded in the EfficientNetB0 metadata. Aggregate metrics below are percentages. The metric source is shown explicitly because the repository contains several checkpoints and historical experiments.
+
+### Dataset, augmentation, and evaluation split
+
+- **Why augment images:** rotations, zooms, shifts, brightness changes, and flips create varied training inputs from existing images. This can improve robustness to image variation and help address class imbalance, but augmented copies are not new independent observations.
+- **Recorded split:** the saved output in `notebooks/04_data_preprocessing.ipynb` reports 8,600 images split into 6,880 training, 860 validation, and 860 test images (80/10/10). Thus, 860 is the total test-set size—not 10 images per class. It averages 21.5 test images per class, with counts varying by class.
+- **Evaluation caveat:** `notebooks/03_targeted_augmentation.ipynb` writes augmented images into the dataset folders, and the preprocessing notebook then creates the train/validation/test split. If related originals and augmented copies land in different splits, the test set is not fully independent and reported accuracy may be optimistic. The notebooks do not establish that augmented siblings were grouped before splitting, so treat these metrics as a holdout result with possible augmentation leakage, not definitive evidence of performance on new field images.
+- **Count discrepancy:** the augmentation notebook specifies a minimum target of 40 images per class, while the preprocessing notebook's saved run reports 8,600 images across 40 classes (an average of 215 per class). The saved outputs do not establish which dataset version or initial class counts were used, or how many images were generated; verify the exact dataset and split files before using these figures in a paper.
+- **Recommended evaluation:** split original images first, keep validation and test images untouched, and augment only training data. For stronger field-generalization evidence, use a separate test set of independently collected images (or group splits by plant/source/session when those identifiers exist).
 
 | Model / artifact | Accuracy | Precision | Recall | F1-score | Evidence status |
 | --- | ---: | ---: | ---: | ---: | --- |
