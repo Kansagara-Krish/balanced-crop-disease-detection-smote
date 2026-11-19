@@ -169,11 +169,16 @@ The image folders under `Final_images_phd/` contain **40 distinct leaf-label cla
 
 ### Dataset, augmentation, and evaluation split
 
-- **Why augment images:** rotations, zooms, shifts, brightness changes, and flips create varied training inputs from existing images. This can improve robustness to image variation and help address class imbalance, but augmented copies are not new independent observations.
-- **Recorded split:** the saved output in `notebooks/04_data_preprocessing.ipynb` reports 8,600 images split into 6,880 training, 860 validation, and 860 test images (80/10/10). Thus, 860 is the total test-set size—not 10 images per class. It averages 21.5 test images per class, with counts varying by class.
-- **Evaluation caveat:** `notebooks/03_targeted_augmentation.ipynb` writes augmented images into the dataset folders, and the preprocessing notebook then creates the train/validation/test split. If related originals and augmented copies land in different splits, the test set is not fully independent and reported accuracy may be optimistic. The notebooks do not establish that augmented siblings were grouped before splitting, so treat these metrics as a holdout result with possible augmentation leakage, not definitive evidence of performance on new field images.
-- **Count discrepancy:** the augmentation notebook specifies a minimum target of 40 images per class, while the preprocessing notebook's saved run reports 8,600 images across 40 classes (an average of 215 per class). The saved outputs do not establish which dataset version or initial class counts were used, or how many images were generated; verify the exact dataset and split files before using these figures in a paper.
-- **Recommended evaluation:** split original images first, keep validation and test images untouched, and augment only training data. For stronger field-generalization evidence, use a separate test set of independently collected images (or group splits by plant/source/session when those identifiers exist).
+The canonical image workflow is **split original images first, then augment training only**:
+
+[![Leakage-safe image training workflow](IMAGE_TRAINING_WORKFLOW.svg)](IMAGE_TRAINING_WORKFLOW.svg)
+
+1. `notebooks/01_data_check.ipynb` verifies the raw `Final_images_phd/` image set and reports corrupt, prior-augmentation, and exact-duplicate files.
+2. `notebooks/04_data_preprocessing.ipynb` reads originals from `Final_images_phd/`, excludes `aug_*` files, corrupt images, and exact duplicates, then writes one stratified 70/15/15 split (70% train, 15% validation, 15% test) and the original-image metadata under `results/preprocessed_data_efficient/`.
+3. Run `notebooks/03_targeted_augmentation.ipynb` **after the split**. It creates two transformed copies per training image in the new `Training_Augmented_images/` folder and records their original training-source paths in `augmentation_manifest.json`. It does not modify `Final_images_phd/` or reuse the legacy `Augmented_images/` folder.
+4. Training notebooks load those added images into the training stream only. Validation and test contain original, unaugmented images. Choose checkpoints with validation results and evaluate the final selected checkpoint on test once.
+
+The older saved outputs and model metrics were produced from previous dataset versions and are **historical**; they are not results for this corrected split. Rerun preprocessing, augmentation, training, and final evaluation before reporting updated metrics. Splitting images cannot prevent leakage between related photos of the same plant or collection session unless those identifiers are available and grouped; an independently collected field test set is stronger evidence of generalization.
 
 | Model / artifact | Accuracy | Precision | Recall | F1-score | Evidence status |
 | --- | ---: | ---: | ---: | ---: | --- |
@@ -184,7 +189,7 @@ The image folders under `Final_images_phd/` contain **40 distinct leaf-label cla
 | Soil Health XGBoost best model (Notebook 14) | 90.60% – 91.81% | 91.82% | 90.60% | 90.44% | Stratified 5-fold CV 91.12%, ROC-AUC 0.9321 |
 | Fertilizer Recommendation XGBoost engine (Notebook 15) | 92.62% | 95.79% | 92.62% | 93.28% | Stratified 5-fold CV 96.01%, ROC-AUC 0.9986 |
 
-The older `results/reports/model_comparison.csv` contains different final-artifact values (MobileNetV2 80.12% and EfficientNetB0 81.28%). These must not be merged with the detailed evaluations: they appear to come from different checkpoints or preprocessing conditions. Resolve this discrepancy by rerunning the same evaluator on each final checkpoint before making a definitive paper table.
+The older `results/reports/model_comparison.csv` and model-by-model metrics were generated before the leakage-safe split was introduced. Do not treat them as corrected-flow results or merge them with future runs. Rerun the same evaluator on each final checkpoint and the new untouched test split before making a definitive paper table.
 
 ### Model-by-model evidence
 
@@ -323,11 +328,11 @@ cnn_model/
 ├── notebooks/                        # Ordered Jupyter notebooks
 │   ├── 01_data_check.ipynb
 │   ├── 02_dataset_visualization.ipynb
-│   ├── 03_targeted_augmentation.ipynb
-│   ├── 04_data_preprocessing.ipynb
+│   ├── 03_targeted_augmentation.ipynb  # Run after 04; writes training copies only
+│   ├── 04_data_preprocessing.ipynb     # Split originals before augmentation
 │   ├── 05_cnn_baseline.ipynb
 │   ├── 06_mobilenet_training.ipynb
-│   ├── 07_offline_augmentation.ipynb
+│   ├── 07_offline_augmentation.ipynb   # Verifies training-only augmentation manifest
 │   ├── 08_model_evaluation.ipynb
 │   ├── 09_resnet50_transfer_learning.ipynb
 │   ├── 10_efficientnetb0_training.ipynb
@@ -358,16 +363,16 @@ cnn_model/
 
 ### Phase 1: Data Preparation
 
-1. `01_data_check.ipynb` — Dataset validation and integrity checks
-2. `02_dataset_visualization.ipynb` — Exploratory data analysis and visualization
-3. `03_targeted_augmentation.ipynb` — Targeted augmentation for class balance
-4. `04_data_preprocessing.ipynb` — Preprocessing, resizing, normalization, and split creation
+1. `01_data_check.ipynb` — Dataset validation, corrupt-image checks, and exact-duplicate reporting
+2. `02_dataset_visualization.ipynb` — Exploratory data analysis and visualization of the original images
+3. `04_data_preprocessing.ipynb` — Exclude old augmentation copies, deduplicate, then split originals 70/15/15
+4. `03_targeted_augmentation.ipynb` — Generate training-only copies under `Training_Augmented_images/`
 
 ### Phase 2: Leaf Disease Model Training
 
 1. `05_cnn_baseline.ipynb` — Custom CNN baseline training
 2. `06_mobilenet_training.ipynb` — MobileNetV2 transfer learning
-3. `07_offline_augmentation.ipynb` — Offline augmentation experiments
+3. `07_offline_augmentation.ipynb` — Verify the training-only augmentation manifest
 4. `09_resnet50_transfer_learning.ipynb` — ResNet50 transfer learning
 5. `10_efficientnetb0_training.ipynb` — EfficientNetB0 transfer learning
 
@@ -440,12 +445,7 @@ Execute notebooks in the order listed above.
 
 ### Train models directly
 
-```bash
-cd models
-python train_mobilenetv2.py
-python train_efficientnetb0.py
-python train_resnet50.py
-```
+The standalone `models/train_*.py` scripts still use legacy preprocessed arrays and evaluate against their stored test arrays. They do **not** implement the corrected split-before-augmentation workflow and must not be used for results reported from the new pipeline. Use the notebooks above; model comparison is performed on validation data in `08_model_evaluation.ipynb`, and only the validation-selected model is evaluated on the untouched test split in `11_prediction_testing.ipynb`.
 
 ---
 
