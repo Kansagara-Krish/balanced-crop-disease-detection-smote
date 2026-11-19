@@ -173,6 +173,24 @@ The canonical image workflow is **split original images first, then augment trai
 
 [![Leakage-safe image training workflow](IMAGE_TRAINING_WORKFLOW.svg)](IMAGE_TRAINING_WORKFLOW.svg)
 
+```mermaid
+flowchart TD
+    A["Original images: Final_images_phd"] --> B["Audit and clean originals"]
+    B --> C["One stratified 70/15/15 split"]
+    C --> D["Training originals: 70%"]
+    C --> E["Validation originals: 15%"]
+    C --> F["Test originals: 15%"]
+    D --> G["Training-only augmentation"]
+    G --> H["Train candidates"]
+    E --> I["Validation loss and metrics"]
+    I --> J["Select/freeze the best checkpoint"]
+    F --> K["Test stays sealed until final evaluation"]
+    J --> L["One final test evaluation"]
+    K --> L
+```
+
+**The order is strict:** original collection → audit/deduplication → split originals once → augment **only the training split** → use validation for checkpoint selection → freeze the selected model → evaluate it once on untouched test data.
+
 1. `notebooks/01_data_check.ipynb` verifies the raw `Final_images_phd/` image set and reports corrupt, prior-augmentation, and exact-duplicate files.
 2. `notebooks/04_data_preprocessing.ipynb` reads originals from `Final_images_phd/`, excludes `aug_*` files, corrupt images, and exact duplicates, then writes one stratified 70/15/15 split (70% train, 15% validation, 15% test) and the original-image metadata under `results/preprocessed_data_efficient/`.
 3. Run `notebooks/03_targeted_augmentation.ipynb` **after the split**. It creates two transformed copies per training image in the new `Training_Augmented_images/` folder and records their original training-source paths in `augmentation_manifest.json`. It does not modify `Final_images_phd/` or reuse the legacy `Augmented_images/` folder.
@@ -365,8 +383,18 @@ cnn_model/
 
 1. `01_data_check.ipynb` — Dataset validation, corrupt-image checks, and exact-duplicate reporting
 2. `02_dataset_visualization.ipynb` — Exploratory data analysis and visualization of the original images
-3. `04_data_preprocessing.ipynb` — Exclude old augmentation copies, deduplicate, then split originals 70/15/15
-4. `03_targeted_augmentation.ipynb` — Generate training-only copies under `Training_Augmented_images/`
+3. `04_data_preprocessing.ipynb` — Exclude old augmentation copies, deduplicate originals, and create the 70/15/15 split
+4. `03_targeted_augmentation.ipynb` — After the split, generate augmentation copies only from the 70% training originals under `Training_Augmented_images/`
+
+```text
+Original images
+  -> audit and deduplicate
+  -> split once: 70% train / 15% validation / 15% test
+  -> augment only 70% train
+  -> train candidates
+  -> select checkpoint using 15% validation
+  -> run one final evaluation on sealed 15% test
+```
 
 ### Phase 2: Leaf Disease Model Training
 
