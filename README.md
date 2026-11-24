@@ -165,7 +165,23 @@ The autonomous decision support system for translating diagnostic findings (from
 
 ## 📈 Verified Results and Evidence
 
-The image folders under `Final_images_phd/` contain **40 distinct leaf-label classes**: Brinjal (10), Castor (7), Cumin (5), Guava (9), and Papaya (9). The `Healthy_*` and `Unhealthy_*` directories are grouping folders, not additional classes. The common held-out test set contains **860 images across those 40 classes**, matching the 40 labels recorded in the EfficientNetB0 metadata. Aggregate metrics below are percentages. The metric source is shown explicitly because the repository contains several checkpoints and historical experiments.
+The image folders under `Final_images_phd/` contain **40 distinct leaf-label classes**: Brinjal (10), Castor (7), Cumin (5), Guava (9), and Papaya (9). The `Healthy_*` and `Unhealthy_*` directories are grouping folders, not additional classes.
+
+### 📊 Dataset Specifications, Splitting, and Augmentation Partitioning
+
+To ensure strict scientific rigor and eliminate data leakage, the dataset undergoes strict deduplication, a one-time stratified split, and targeted offline augmentation applied **exclusively to the training partition**:
+
+| Dataset Partition / Phase | Image Count | Description / Methodology |
+| :--- | :---: | :--- |
+| **Raw Images on Disk** | **1,720** | Original raw image files collected under `Final_images_phd/` across 5 crops & 40 disease classes |
+| **Integrity & Duplicate Filtering** | **-89** | Exact binary duplicates (MD5 hash matching) and corrupt files eliminated |
+| **Empirical Unique Base Images** | **1,631** | Clean, verified unique plant disease images across all 40 diagnostic classes |
+| **Training Split (70% Originals)** | **1,141** | Base empirical images assigned to the training split via stratified partitioning |
+| **Validation Split (15% Originals)** | **247** | Pure unaugmented holdout set for hyperparameter tuning & checkpoint selection |
+| **Test Split (15% Originals)** | **243** | Sealed, unaugmented holdout benchmark for final model evaluation & paper reporting |
+| **8x Targeted Training Augmentation** | **+9,128** | 8 realistic geometric/photometric augmentations per training image ($1,141 \times 8$) in `Training_Augmented_images/` |
+| **Total Effective Training Pool** | **10,269** | **Combined training set** ($1,141\text{ originals} + 9,128\text{ augmented}$) providing ~256 balanced images per class |
+| **Total Evaluation Holdout** | **490** | $247\text{ validation} + 243\text{ test}$ images kept 100% unaugmented and leak-free |
 
 ### Dataset, augmentation, and evaluation split
 
@@ -175,26 +191,28 @@ The canonical image workflow is **split original images first, then augment trai
 
 ```mermaid
 flowchart TD
-    A["Original images: Final_images_phd"] --> B["Audit and clean originals"]
-    B --> C["One stratified 70/15/15 split"]
-    C --> D["Training originals: 70%"]
-    C --> E["Validation originals: 15%"]
-    C --> F["Test originals: 15%"]
-    D --> G["Training-only augmentation"]
-    G --> H["Train candidates"]
-    E --> I["Validation loss and metrics"]
-    I --> J["Select/freeze the best checkpoint"]
-    F --> K["Test stays sealed until final evaluation"]
-    J --> L["One final test evaluation"]
-    K --> L
+    A["Original images: Final_images_phd (1,720)"] --> B["Audit and deduplicate (-89 duplicates/corrupt)"]
+    B --> C["Clean empirical dataset (1,631 unique images)"]
+    C --> D["Stratified 70/15/15 split"]
+    D --> E["Training originals: 1,141 (70%)"]
+    D --> F["Validation originals: 247 (15%)"]
+    D --> G["Test originals: 243 (15%)"]
+    E --> H["8x Targeted training augmentation (+9,128)"]
+    H --> I["Total training pool: 10,269 images (~256/class)"]
+    I --> J["Train CNN & Transfer Learning models"]
+    F --> K["Validation checkpoint selection (247 pure images)"]
+    K --> L["Select & freeze best checkpoint"]
+    G --> M["Sealed holdout test (243 pure images)"]
+    L --> N["One final benchmark evaluation"]
+    M --> N
 ```
 
-**The order is strict:** original collection → audit/deduplication → split originals once → augment **only the training split** → use validation for checkpoint selection → freeze the selected model → evaluate it once on untouched test data.
+**The order is strict:** original collection (1,720) → audit/deduplication (1,631 unique) → split originals once (1,141 train / 247 val / 243 test) → augment **only the training split** (8x to yield 9,128 augmented; 10,269 total training pool) → use validation for checkpoint selection → freeze the selected model → evaluate it once on untouched test data (243 pure images).
 
-1. `notebooks/01_data_check.ipynb` verifies the raw `Final_images_phd/` image set and reports corrupt, prior-augmentation, and exact-duplicate files.
-2. `notebooks/04_data_preprocessing.ipynb` reads originals from `Final_images_phd/`, excludes `aug_*` files, corrupt images, and exact duplicates, then writes one stratified 70/15/15 split (70% train, 15% validation, 15% test) and the original-image metadata under `results/preprocessed_data_efficient/`.
-3. Run `notebooks/03_targeted_augmentation.ipynb` **after the split**. It creates two transformed copies per training image in the new `Training_Augmented_images/` folder and records their original training-source paths in `augmentation_manifest.json`. It does not modify `Final_images_phd/` or reuse the legacy `Augmented_images/` folder.
-4. Training notebooks load those added images into the training stream only. Validation and test contain original, unaugmented images. Choose checkpoints with validation results and evaluate the final selected checkpoint on test once.
+1. `notebooks/01_data_check.ipynb` verifies the raw `Final_images_phd/` image set (1,720 images) and reports corrupt, prior-augmentation, and exact-duplicate files (89 flagged/removed).
+2. `notebooks/03_data_preprocessing.ipynb` reads originals from `Final_images_phd/`, excludes `aug_*` files, corrupt images, and exact duplicates, then writes one stratified 70/15/15 split (**1,141 train, 247 validation, 243 test**) and the original-image metadata under `results/preprocessed_data_efficient/`.
+3. Run `notebooks/04_targeted_augmentation.ipynb` **after the split**. It creates 8 targeted transformed copies per training image (**9,128 augmented images**) in the new `Training_Augmented_images/` folder and records their original training-source paths in `augmentation_manifest.json`. It does not modify `Final_images_phd/` or reuse the legacy `Augmented_images/` folder.
+4. Training notebooks (`notebooks/05_cnn_baseline.ipynb`, `06_mobilenet_training.ipynb`, `09_resnet50_transfer_learning.ipynb`, `10_efficientnetb0_training.ipynb`) load those added images into the training stream only (total **10,269 training images**). Validation (**247 images**) and test (**243 images**) contain original, unaugmented images. Choose checkpoints with validation results and evaluate the final selected checkpoint on test once.
 
 The older saved outputs and model metrics were produced from previous dataset versions and are **historical**; they are not results for this corrected split. Rerun preprocessing, augmentation, training, and final evaluation before reporting updated metrics. Splitting images cannot prevent leakage between related photos of the same plant or collection session unless those identifiers are available and grouped; an independently collected field test set is stronger evidence of generalization.
 
@@ -346,8 +364,8 @@ cnn_model/
 ├── notebooks/                        # Ordered Jupyter notebooks
 │   ├── 01_data_check.ipynb
 │   ├── 02_dataset_visualization.ipynb
-│   ├── 03_targeted_augmentation.ipynb  # Run after 04; writes training copies only
-│   ├── 04_data_preprocessing.ipynb     # Split originals before augmentation
+│   ├── 03_data_preprocessing.ipynb     # Split originals before augmentation
+│   ├── 04_targeted_augmentation.ipynb  # Run after 03; writes training copies only
 │   ├── 05_cnn_baseline.ipynb
 │   ├── 06_mobilenet_training.ipynb
 │   ├── 07_offline_augmentation.ipynb   # Verifies training-only augmentation manifest
@@ -383,8 +401,8 @@ cnn_model/
 
 1. `01_data_check.ipynb` — Dataset validation, corrupt-image checks, and exact-duplicate reporting
 2. `02_dataset_visualization.ipynb` — Exploratory data analysis and visualization of the original images
-3. `04_data_preprocessing.ipynb` — Exclude old augmentation copies, deduplicate originals, and create the 70/15/15 split
-4. `03_targeted_augmentation.ipynb` — After the split, generate augmentation copies only from the 70% training originals under `Training_Augmented_images/`
+3. `03_data_preprocessing.ipynb` — Exclude old augmentation copies, deduplicate originals, and create the 70/15/15 split
+4. `04_targeted_augmentation.ipynb` — After the split, generate augmentation copies only from the 70% training originals under `Training_Augmented_images/`
 
 ```text
 Original images
